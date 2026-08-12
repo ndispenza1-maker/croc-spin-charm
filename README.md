@@ -1,56 +1,27 @@
-# Spinning Star Jibbitz Charm 🌟
+# Croc Spin Charm
 
-A printable spinning Croc charm. Two parts print separately, then snap together. The star rim spins freely on the hub.
+A spinning charm for your Crocs. Snaps in like a Jibbitz. The face spins freely.
+
+**Live:** https://croc-spin-charm.vercel.app
 
 ---
 
-## What's In This Repo
+## Print Files
 
 | File | What It Is |
 |---|---|
-| `hub_cap.stl` | ⬅️ HUB PART 1 of 3 |
-| `hub_bearing.stl` | ⬅️ HUB PART 2 of 3 |
-| `hub_shaft.stl` | ⬅️ HUB PART 3 of 3 |
-| `rim_band.stl` | ⭐ STAR RIM PART 1 of 2 |
-| `star_shape.stl` | ⭐ STAR RIM PART 2 of 2 |
-| `spinning_star_jibbitz.zip` | All files zipped together |
+| `croc_pin_housing.stl` | Housing — Jibbitz peg + rim + snap post |
+| `croc_pin_disc.stl` | Spinning disc — US quarter diameter |
 
----
+## Print Instructions
 
-## How To Print
+- **Housing:** peg facing up, flat on bed, no supports
+- **Disc:** flat on bed, no supports
+- Press disc onto snap post until it clicks — spins freely inside housing
 
-### Part 1 — The Hub (snaps into your Croc)
-Import these 3 files into your slicer **at the same time** and print them as **one piece**:
-- `hub_cap.stl`
-- `hub_bearing.stl`
-- `hub_shaft.stl`
+## Dimensions
 
-Orient: cap side facing DOWN on the print bed. No supports needed.
-
-### Part 2 — The Star Rim (the part that spins)
-Import these 2 files into your slicer **at the same time** and print them as **one piece**:
-- `rim_band.stl`
-- `star_shape.stl`
-
-Orient: flat side facing DOWN on the print bed. No supports needed.
-
----
-
-## Print Settings
-- Layer height: 0.2mm
-- Walls: 3
-- Infill: 20%
-- No supports
-- Any filament works (PLA is fine)
-
----
-
-## Assembly
-1. After both parts are printed and cooled, slide the **star rim** over the **hub bearing post**
-2. It should spin freely — if it's tight, lightly sand the bearing surface or put a tiny drop of dish soap on it
-3. Snap the hub into your Croc like a normal Jibbitz charm — push through the hole from outside, press until it clicks
-
----
-
-## Tolerances
-Built with 0.35mm clearance for FDM printing. If your printer runs tight, sand lightly. If it's too loose, let us know and we'll tighten it up.
+- Disc: 24.26mm dia (US quarter)
+- Jibbitz peg: 17mm mushroom head, standard fit
+- Spin clearance: 0.6mm total
+- Snap press-fit: 0.3mm interference
