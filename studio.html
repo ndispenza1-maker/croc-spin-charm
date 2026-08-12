@@ -8,93 +8,133 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --black: #0a0a0a;
-      --white: #f5f5f5;
-      --accent: #ff4d00;
-      --grey: #1a1a1a;
-      --border: #222;
-      --mid: #666;
+      --black: #0a0a0a; --white: #f5f5f5; --accent: #ff4d00;
+      --grey: #1a1a1a; --border: #222; --mid: #666;
       --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     body { background: var(--black); color: var(--white); font-family: var(--font); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
     nav {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 0 2rem; height: 56px; border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
+      padding: 0 2rem; height: 56px; border-bottom: 1px solid var(--border); flex-shrink: 0;
     }
     .logo { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--white); opacity: 0.6; }
     .logo:hover { opacity: 1; }
 
-    .studio { display: grid; grid-template-columns: 1fr 340px; flex: 1; overflow: hidden; }
+    .studio { display: grid; grid-template-columns: 1fr 360px; flex: 1; overflow: hidden; }
 
     /* PREVIEW */
     .preview {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: #080808; border-right: 1px solid var(--border);
-      gap: 1.25rem;
+      background: #080808; border-right: 1px solid var(--border); gap: 1rem;
     }
     .preview-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); }
-    #disc { display: block; }
+    .selected-name { font-size: 0.75rem; color: var(--mid); letter-spacing: 0.08em; }
 
     /* PANEL */
-    .panel { display: flex; flex-direction: column; overflow-y: auto; }
+    .panel { display: flex; flex-direction: column; overflow: hidden; }
 
-    .section { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
-    .section-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 0.75rem; }
+    .section { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .section.grow { flex: 1; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
+    .section-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 0.65rem; }
 
-    /* SHAPE GRID */
-    .shape-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; }
+    /* FEATURED TILES */
+    .shape-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.35rem; }
     .shape-tile {
       background: var(--grey); border: 1.5px solid transparent; border-radius: 3px;
-      padding: 0.6rem 0.25rem; cursor: pointer; text-align: center;
+      padding: 0.45rem 0.2rem; cursor: pointer; text-align: center;
       transition: border-color 0.12s, background 0.12s;
-      display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
     }
     .shape-tile:hover { border-color: #444; }
     .shape-tile.active { border-color: var(--accent); background: #1f0d00; }
-    .shape-glyph { font-size: 1.3rem; line-height: 1; }
-    .shape-name { font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid); }
+    .shape-glyph { font-size: 1.2rem; line-height: 1; }
+    .shape-name { font-size: 0.55rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--mid); }
     .shape-tile.active .shape-name { color: var(--accent); }
 
-    /* COLORS */
-    .color-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .swatch {
-      width: 32px; height: 32px; border-radius: 50%;
-      border: 2.5px solid transparent; cursor: pointer;
-      transition: border-color 0.12s;
-    }
-    .swatch.active { border-color: var(--white); }
-
-    /* TEXT */
-    .text-input {
+    /* SEARCH */
+    .search-wrap { position: relative; margin-bottom: 0.65rem; flex-shrink: 0; }
+    .search-input {
       width: 100%; background: var(--grey); border: 1.5px solid var(--border);
       border-radius: 3px; color: var(--white); font-family: var(--font);
-      font-size: 0.95rem; padding: 0.65rem 0.85rem; outline: none;
+      font-size: 0.9rem; padding: 0.6rem 0.85rem; outline: none; transition: border-color 0.12s;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .search-count { font-size: 0.65rem; color: var(--mid); margin-top: 0.3rem; }
+
+    /* RESULTS */
+    .results { overflow-y: auto; flex: 1; min-height: 0; }
+    .results-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.35rem; padding: 0.1rem; }
+    .icon-tile {
+      background: var(--grey); border: 1.5px solid transparent; border-radius: 3px;
+      padding: 0.5rem 0.2rem; cursor: pointer; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
       transition: border-color 0.12s;
     }
-    .text-input:focus { border-color: var(--accent); }
-    .hint { font-size: 0.7rem; color: var(--mid); margin-top: 0.35rem; }
+    .icon-tile:hover { border-color: #444; }
+    .icon-tile.active { border-color: var(--accent); background: #1f0d00; }
+    .icon-tile svg { width: 24px; height: 24px; fill: var(--white); display: block; }
+    .icon-tile .icon-name { font-size: 0.5rem; color: var(--mid); text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+    .icon-tile.active .icon-name { color: var(--accent); }
+
+    .no-results { padding: 1rem 0; text-align: center; }
+    .no-results p { font-size: 0.85rem; color: var(--mid); margin-bottom: 0.75rem; }
+    .btn-custom {
+      background: transparent; border: 1.5px solid var(--accent); color: var(--accent);
+      padding: 0.6rem 1.2rem; font-size: 0.8rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase; border-radius: 2px; cursor: pointer;
+    }
+    .btn-custom:hover { background: var(--accent); color: #fff; }
+
+    /* COLORS */
+    .color-row { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+    .swatch { width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid transparent; cursor: pointer; transition: border-color 0.12s; }
+    .swatch.active { border-color: var(--white); }
 
     /* BUY */
-    .buy { padding: 1.25rem 1.5rem; margin-top: auto; }
-    .buy-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.85rem; }
+    .buy { padding: 1rem 1.5rem; flex-shrink: 0; }
+    .buy-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.75rem; }
     .buy-label { font-size: 0.8rem; color: var(--mid); }
-    .buy-price { font-size: 1.6rem; font-weight: 900; }
+    .buy-price { font-size: 1.5rem; font-weight: 900; }
     .btn-buy {
       display: block; width: 100%; background: var(--accent); color: #fff;
-      padding: 0.9rem; font-size: 0.9rem; font-weight: 700;
+      padding: 0.85rem; font-size: 0.88rem; font-weight: 700;
       letter-spacing: 0.08em; text-transform: uppercase;
       border: none; border-radius: 2px; cursor: pointer;
     }
     .btn-buy:hover { opacity: 0.88; }
-    .shipping { font-size: 0.68rem; color: var(--mid); text-align: center; margin-top: 0.5rem; }
+    .shipping { font-size: 0.68rem; color: var(--mid); text-align: center; margin-top: 0.4rem; }
+
+    /* CUSTOM MODAL */
+    .modal-bg {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      z-index: 100; align-items: center; justify-content: center;
+    }
+    .modal-bg.open { display: flex; }
+    .modal {
+      background: #111; border: 1px solid #333; border-radius: 6px;
+      padding: 2rem; width: 90%; max-width: 420px;
+    }
+    .modal h2 { font-size: 1.1rem; font-weight: 900; margin-bottom: 0.4rem; }
+    .modal p { font-size: 0.82rem; color: var(--mid); margin-bottom: 1.25rem; }
+    .modal textarea {
+      width: 100%; background: var(--grey); border: 1.5px solid var(--border);
+      border-radius: 3px; color: var(--white); font-family: var(--font);
+      font-size: 0.9rem; padding: 0.65rem 0.85rem; outline: none;
+      resize: vertical; min-height: 80px; margin-bottom: 1rem;
+      transition: border-color 0.12s;
+    }
+    .modal textarea:focus { border-color: var(--accent); }
+    .modal-btns { display: flex; gap: 0.75rem; }
+    .btn-cancel { flex: 1; background: transparent; border: 1px solid #444; color: var(--mid); padding: 0.7rem; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 2px; cursor: pointer; }
+    .btn-submit { flex: 2; background: var(--accent); color: #fff; border: none; padding: 0.7rem; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 2px; cursor: pointer; }
+    .btn-submit:hover { opacity: 0.88; }
 
     @media (max-width: 680px) {
-      body { overflow: auto; }
+      body { overflow: auto; height: auto; }
       .studio { grid-template-columns: 1fr; height: auto; }
       .preview { padding: 2.5rem 1rem; border-right: none; border-bottom: 1px solid var(--border); }
-      .buy { margin-top: 0; }
+      .panel { height: 80vh; }
     }
   </style>
 </head>
@@ -109,30 +149,44 @@
   <div class="preview">
     <div class="preview-label">Live Preview</div>
     <canvas id="disc" width="260" height="260"></canvas>
+    <div class="selected-name" id="selected-name">star-fill</div>
   </div>
 
   <div class="panel">
 
+    <!-- FEATURED -->
     <div class="section">
-      <div class="section-label">Shape</div>
-      <div class="shape-grid" id="shape-grid"></div>
+      <div class="section-label">Featured</div>
+      <div class="shape-grid" id="featured-grid"></div>
     </div>
 
+    <!-- SEARCH -->
+    <div class="section grow">
+      <div class="section-label">All Shapes</div>
+      <div class="search-wrap">
+        <input class="search-input" id="search" type="text" placeholder="Search 2000+ shapes..." autocomplete="off" />
+        <div class="search-count" id="search-count"></div>
+      </div>
+      <div class="results">
+        <div class="results-grid" id="results-grid"></div>
+        <div class="no-results" id="no-results" style="display:none">
+          <p>No match found — request a custom shape.</p>
+          <button class="btn-custom" id="request-btn">Request Custom — $9.99</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLORS -->
     <div class="section">
       <div class="section-label">Color</div>
       <div class="color-row" id="color-row"></div>
     </div>
 
-    <div class="section">
-      <div class="section-label">Text — optional</div>
-      <input class="text-input" id="txt" type="text" maxlength="10" placeholder="e.g. BESTIE, 2025, ♥" />
-      <div class="hint">10 characters max</div>
-    </div>
-
+    <!-- BUY -->
     <div class="buy">
       <div class="buy-row">
-        <span class="buy-label">Custom spinner charm</span>
-        <span class="buy-price">$4.99</span>
+        <span class="buy-label" id="buy-label">Custom spinner charm</span>
+        <span class="buy-price" id="buy-price">$4.99</span>
       </div>
       <button class="btn-buy" id="buy-btn">Add to Cart</button>
       <div class="shipping">+ shipping &nbsp;·&nbsp; Free over $25</div>
@@ -141,21 +195,24 @@
   </div>
 </div>
 
+<!-- CUSTOM REQUEST MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h2>Custom Shape — $9.99</h2>
+    <p>Describe your shape or idea. We'll design it and reach out to confirm before charging.</p>
+    <textarea id="custom-desc" placeholder="e.g. My dog's silhouette, a guitar, the letter Q in bubble font..."></textarea>
+    <div class="modal-btns">
+      <button class="btn-cancel" id="modal-cancel">Cancel</button>
+      <button class="btn-submit" id="modal-submit">Submit Request</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ── SHAPES ────────────────────────────────────────────────────────
-const SHAPES = [
-  { id: 'star',      glyph: '★', label: 'Star',      draw: drawStar      },
-  { id: 'heart',     glyph: '♥', label: 'Heart',     draw: drawHeart     },
-  { id: 'lightning', glyph: '⚡', label: 'Lightning', draw: drawLightning },
-  { id: 'moon',      glyph: '☽', label: 'Moon',      draw: drawMoon      },
-  { id: 'diamond',   glyph: '◆', label: 'Diamond',   draw: drawDiamond   },
-  { id: 'crown',     glyph: '♛', label: 'Crown',     draw: drawCrown     },
-  { id: 'shield',    glyph: '⛨', label: 'Shield',    draw: drawShield    },
-  { id: 'flame',     glyph: '🔥', label: 'Flame',     draw: drawFlame     },
-  { id: 'peace',     glyph: '☮', label: 'Peace',     draw: drawPeace     },
-  { id: 'paw',       glyph: '🐾', label: 'Paw',       draw: drawPaw       },
-  { id: 'flower',    glyph: '✿', label: 'Flower',    draw: drawFlower    },
-  { id: 'wave',      glyph: '〜', label: 'Wave',      draw: drawWave      },
+const FEATURED = [
+  'star-fill','heart-fill','lightning-fill','moon-fill',
+  'diamond-fill','gem','shield-fill','fire',
+  'peace-fill','emoji-smile-fill','flower1','balloon-fill'
 ];
 
 const COLORS = [
@@ -169,23 +226,21 @@ const COLORS = [
   { hex: '#111111', name: 'Black'  },
 ];
 
-// ── STATE ─────────────────────────────────────────────────────────
-let activeShape = SHAPES[0];
+// ── STATE ────────────────────────────────────────────────────────
+let icons = {};          // loaded from icons.json
+let activeIcon = null;   // { name, paths }
 let activeColor = COLORS[0].hex;
-let discText    = '';
-let angle       = 0;
+let angle = 0;
+let isCustom = false;
 
 // ── CANVAS ───────────────────────────────────────────────────────
 const canvas = document.getElementById('disc');
-const ctx    = canvas.getContext('2d');
-const C      = 130; // center
-const R      = 108; // shape radius
+const ctx = canvas.getContext('2d');
+const C = 130, R = 108;
 
 function isLight(hex) {
-  const r = parseInt(hex.slice(1,3),16),
-        g = parseInt(hex.slice(3,5),16),
-        b = parseInt(hex.slice(5,7),16);
-  return (r*299 + g*587 + b*114)/1000 > 140;
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return (r*299+g*587+b*114)/1000 > 140;
 }
 
 function render() {
@@ -194,17 +249,26 @@ function render() {
   ctx.translate(C, C);
   ctx.rotate(angle);
 
-  ctx.fillStyle = activeColor;
-  activeShape.draw(ctx, R);
-
-  if (discText) {
-    const fg = isLight(activeColor) ? '#111' : '#fff';
-    const fs = discText.length > 7 ? 16 : discText.length > 4 ? 20 : 26;
-    ctx.font = `900 ${fs}px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = fg;
-    ctx.fillText(discText.toUpperCase(), 0, 0);
+  if (activeIcon) {
+    // Scale the 16×16 viewbox to fill the disc
+    const scale = (R * 2) / 16;
+    ctx.save();
+    ctx.scale(scale, scale);
+    ctx.translate(-8, -8);
+    ctx.fillStyle = activeColor;
+    ctx.strokeStyle = activeColor;
+    activeIcon.paths.forEach(d => {
+      const p = new Path2D(d);
+      ctx.fill(p, 'evenodd');
+    });
+    ctx.restore();
+  } else {
+    // placeholder ring
+    ctx.beginPath();
+    ctx.arc(0, 0, R, 0, Math.PI*2);
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 2;
+    ctx.stroke();
   }
 
   ctx.restore();
@@ -213,157 +277,95 @@ function render() {
 }
 render();
 
-// ── SHAPE DRAW FUNCTIONS ──────────────────────────────────────────
-function drawStar(ctx, r) {
-  ctx.beginPath();
-  for (let i = 0; i < 10; i++) {
-    const rad = i % 2 === 0 ? r : r * 0.42;
-    const a   = (i * Math.PI / 5) - Math.PI / 2;
-    i === 0 ? ctx.moveTo(rad*Math.cos(a), rad*Math.sin(a))
-            : ctx.lineTo(rad*Math.cos(a), rad*Math.sin(a));
-  }
-  ctx.closePath(); ctx.fill();
-}
+// ── LOAD ICONS ───────────────────────────────────────────────────
+fetch('/icons.json')
+  .then(r => r.json())
+  .then(data => {
+    icons = data;
+    buildFeatured();
+    renderSearch('');
+    // activate first featured
+    const first = FEATURED.find(n => icons[n]);
+    if (first) selectIcon(first);
+  });
 
-function drawHeart(ctx, r) {
-  const s = r / 70;
-  ctx.save(); ctx.scale(s, s);
-  ctx.beginPath();
-  ctx.moveTo(0, -10);
-  ctx.bezierCurveTo(-70, -80, -110,  15, 0,  75);
-  ctx.bezierCurveTo( 110,  15,  70, -80, 0, -10);
-  ctx.closePath(); ctx.fill();
-  ctx.restore();
-}
-
-function drawLightning(ctx, r) {
-  const w = r * 0.45, h = r;
-  ctx.beginPath();
-  ctx.moveTo( w * 0.3, -h);
-  ctx.lineTo(-w * 0.5,  h * 0.05);
-  ctx.lineTo( w * 0.15, h * 0.05);
-  ctx.lineTo(-w * 0.3,  h);
-  ctx.lineTo( w * 0.5, -h * 0.05);
-  ctx.lineTo(-w * 0.15,-h * 0.05);
-  ctx.closePath(); ctx.fill();
-}
-
-function drawMoon(ctx, r) {
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(0, 0, r, 0, Math.PI * 2);
-  ctx.arc(r * 0.32, -r * 0.08, r * 0.76, 0, Math.PI * 2, true);
-  ctx.fill('evenodd');
-  ctx.restore();
-}
-
-function drawDiamond(ctx, r) {
-  ctx.beginPath();
-  ctx.moveTo(0, -r);
-  ctx.lineTo(r * 0.65,  0);
-  ctx.lineTo(0,  r);
-  ctx.lineTo(-r * 0.65, 0);
-  ctx.closePath(); ctx.fill();
-}
-
-function drawCrown(ctx, r) {
-  const by = r * 0.45, ty = -r * 0.2;
-  ctx.beginPath();
-  ctx.moveTo(-r * 0.85, by);
-  ctx.lineTo(-r * 0.85, ty);
-  ctx.lineTo(-r * 0.45, ty + r * 0.5);
-  ctx.lineTo(0,          ty - r * 0.3);
-  ctx.lineTo( r * 0.45, ty + r * 0.5);
-  ctx.lineTo( r * 0.85, ty);
-  ctx.lineTo( r * 0.85, by);
-  ctx.closePath(); ctx.fill();
-  // base band
-  ctx.fillRect(-r * 0.85, by, r * 1.7, r * 0.25);
-}
-
-function drawShield(ctx, r) {
-  ctx.beginPath();
-  ctx.moveTo(0, r * 0.95);
-  ctx.bezierCurveTo(-r*0.55, r*0.5, -r*0.95, r*0.1, -r*0.95, -r*0.4);
-  ctx.lineTo(-r * 0.95, -r * 0.7);
-  ctx.bezierCurveTo(-r*0.95, -r*0.95, -r*0.65, -r*0.95, 0, -r*0.95);
-  ctx.bezierCurveTo( r*0.65, -r*0.95,  r*0.95, -r*0.95, r*0.95, -r*0.7);
-  ctx.lineTo(r * 0.95, -r * 0.4);
-  ctx.bezierCurveTo(r*0.95, r*0.1, r*0.55, r*0.5, 0, r*0.95);
-  ctx.closePath(); ctx.fill();
-}
-
-function drawFlame(ctx, r) {
-  ctx.beginPath();
-  ctx.moveTo(0, r);
-  ctx.bezierCurveTo(-r*0.55, r*0.4, -r*0.65, -r*0.1, -r*0.2, -r*0.45);
-  ctx.bezierCurveTo(-r*0.3,  -r*0.65, -r*0.1, -r*0.85, 0, -r);
-  ctx.bezierCurveTo( r*0.1,  -r*0.85,  r*0.3, -r*0.65,  r*0.2, -r*0.45);
-  ctx.bezierCurveTo( r*0.65, -r*0.1,   r*0.55, r*0.4, 0, r);
-  ctx.closePath(); ctx.fill();
-}
-
-function drawPeace(ctx, r) {
-  const fg = isLight(activeColor) ? '#111' : '#fff'; // not needed here, caller sets fillStyle
-  ctx.save();
-  ctx.lineWidth = r * 0.12;
-  ctx.strokeStyle = activeColor;
-  ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(0, -r); ctx.lineTo(0, r);
-  ctx.moveTo(0, 0);  ctx.lineTo(-r * Math.cos(Math.PI/6), r * Math.sin(Math.PI/6));
-  ctx.moveTo(0, 0);  ctx.lineTo( r * Math.cos(Math.PI/6), r * Math.sin(Math.PI/6));
-  ctx.stroke();
-  ctx.restore();
-}
-
-function drawPaw(ctx, r) {
-  ctx.beginPath(); ctx.arc(0, r*0.18, r*0.52, 0, Math.PI*2); ctx.fill();
-  [[-r*0.52,-r*0.28],[-r*0.18,-r*0.6],[r*0.18,-r*0.6],[r*0.52,-r*0.28]].forEach(([x,y]) => {
-    ctx.beginPath(); ctx.arc(x, y, r*0.22, 0, Math.PI*2); ctx.fill();
+// ── SELECT ───────────────────────────────────────────────────────
+function selectIcon(name) {
+  if (!icons[name]) return;
+  activeIcon = { name, paths: icons[name].paths };
+  isCustom = false;
+  document.getElementById('selected-name').textContent = name;
+  document.getElementById('buy-label').textContent = 'Custom spinner charm';
+  document.getElementById('buy-price').textContent = '$4.99';
+  // mark active in grids
+  document.querySelectorAll('.shape-tile, .icon-tile').forEach(t => {
+    t.classList.toggle('active', t.dataset.name === name);
   });
 }
 
-function drawFlower(ctx, r) {
-  const petals = 6, pr = r*0.42, cr = r*0.28;
-  for (let i = 0; i < petals; i++) {
-    const a = (i/petals) * Math.PI*2;
-    ctx.beginPath();
-    ctx.arc(Math.cos(a)*(r-pr), Math.sin(a)*(r-pr), pr, 0, Math.PI*2);
-    ctx.fill();
-  }
-  ctx.beginPath(); ctx.arc(0, 0, cr, 0, Math.PI*2); ctx.fill();
+// ── FEATURED ─────────────────────────────────────────────────────
+function buildFeatured() {
+  const grid = document.getElementById('featured-grid');
+  grid.innerHTML = '';
+  FEATURED.forEach(name => {
+    if (!icons[name]) return;
+    const tile = document.createElement('div');
+    tile.className = 'shape-tile';
+    tile.dataset.name = name;
+    tile.innerHTML = svgEl(icons[name].paths, 22) +
+      `<span class="shape-name">${name.replace(/-fill$/,'').replace(/-/g,' ')}</span>`;
+    tile.addEventListener('click', () => selectIcon(name));
+    grid.appendChild(tile);
+  });
 }
 
-function drawWave(ctx, r) {
-  ctx.save();
-  ctx.lineWidth = r * 0.14;
-  ctx.lineCap = 'round';
-  ctx.strokeStyle = activeColor;
-  [-r*0.28, r*0.28].forEach(oy => {
-    ctx.beginPath();
-    ctx.moveTo(-r, oy);
-    ctx.bezierCurveTo(-r*0.5, oy - r*0.45, -r*0.1, oy + r*0.45,  r*0.3, oy);
-    ctx.bezierCurveTo( r*0.6, oy - r*0.35,  r*0.85, oy + r*0.3,  r,     oy);
-    ctx.stroke();
-  });
-  ctx.restore();
-}
-
-// ── BUILD UI ──────────────────────────────────────────────────────
-const shapeGrid = document.getElementById('shape-grid');
-SHAPES.forEach(s => {
-  const tile = document.createElement('div');
-  tile.className = 'shape-tile' + (s.id === activeShape.id ? ' active' : '');
-  tile.innerHTML = `<span class="shape-glyph">${s.glyph}</span><span class="shape-name">${s.label}</span>`;
-  tile.addEventListener('click', () => {
-    document.querySelectorAll('.shape-tile').forEach(t => t.classList.remove('active'));
-    tile.classList.add('active');
-    activeShape = s;
-  });
-  shapeGrid.appendChild(tile);
+// ── SEARCH ───────────────────────────────────────────────────────
+let searchTimer;
+document.getElementById('search').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => renderSearch(e.target.value.trim().toLowerCase()), 120);
 });
 
+function renderSearch(q) {
+  const grid = document.getElementById('results-grid');
+  const noRes = document.getElementById('no-results');
+  const count = document.getElementById('search-count');
+  grid.innerHTML = '';
+
+  const names = Object.keys(icons);
+  const filtered = q ? names.filter(n => n.includes(q)) : names.slice(0, 80);
+
+  count.textContent = q
+    ? `${filtered.length} result${filtered.length !== 1 ? 's' : ''}`
+    : `Showing 80 of ${names.length} — type to search`;
+
+  if (filtered.length === 0) {
+    noRes.style.display = 'block';
+    grid.style.display = 'none';
+    return;
+  }
+  noRes.style.display = 'none';
+  grid.style.display = 'grid';
+
+  const limit = Math.min(filtered.length, q ? 200 : 80);
+  for (let i = 0; i < limit; i++) {
+    const name = filtered[i];
+    const tile = document.createElement('div');
+    tile.className = 'icon-tile';
+    tile.dataset.name = name;
+    tile.innerHTML = svgEl(icons[name].paths, 24) +
+      `<span class="icon-name">${name.replace(/-/g,' ')}</span>`;
+    tile.addEventListener('click', () => selectIcon(name));
+    grid.appendChild(tile);
+  }
+}
+
+function svgEl(paths, size) {
+  const pStr = paths.map(d => `<path d="${d}" fill-rule="evenodd"/>`).join('');
+  return `<svg viewBox="0 0 16 16" width="${size}" height="${size}" fill="currentColor">${pStr}</svg>`;
+}
+
+// ── COLORS ───────────────────────────────────────────────────────
 const colorRow = document.getElementById('color-row');
 COLORS.forEach((c, i) => {
   const sw = document.createElement('div');
@@ -378,10 +380,23 @@ COLORS.forEach((c, i) => {
   colorRow.appendChild(sw);
 });
 
-document.getElementById('txt').addEventListener('input', e => { discText = e.target.value; });
+// ── CUSTOM MODAL ─────────────────────────────────────────────────
+document.getElementById('request-btn').addEventListener('click', () => {
+  document.getElementById('modal').classList.add('open');
+});
+document.getElementById('modal-cancel').addEventListener('click', () => {
+  document.getElementById('modal').classList.remove('open');
+});
+document.getElementById('modal-submit').addEventListener('click', () => {
+  const desc = document.getElementById('custom-desc').value.trim();
+  if (!desc) return;
+  // Stripe custom checkout wires in here
+  alert('Custom request received! We\'ll be in touch to confirm before charging.');
+  document.getElementById('modal').classList.remove('open');
+});
 
+// ── BUY ──────────────────────────────────────────────────────────
 document.getElementById('buy-btn').addEventListener('click', () => {
-  // Stripe checkout wires in here
   alert('Checkout coming soon!');
 });
 </script>
