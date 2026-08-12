@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Croc Spin Charm</title>
-  <meta name="description" content="A spinning charm for your Crocs. Snaps in like a Jibbitz, spins freely. Print your own or grab one ready-made." />
+  <meta name="description" content="Design your own spinning Croc charm. Subscribe, build it your way, wear it." />
 
   <!-- Vercel Analytics -->
   <script defer src="/_vercel/insights/script.js"></script>
@@ -30,7 +30,6 @@
       line-height: 1.5;
     }
 
-    /* NAV */
     nav {
       display: flex;
       justify-content: space-between;
@@ -67,11 +66,8 @@
       align-items: center;
       text-align: center;
       padding: 4rem 2rem;
-      position: relative;
-      overflow: hidden;
     }
 
-    /* Spinning disc visual */
     .disc-wrap {
       position: relative;
       width: 180px;
@@ -82,10 +78,7 @@
       width: 180px;
       height: 180px;
       border-radius: 50%;
-      background: conic-gradient(
-        from 0deg,
-        #ff4d00, #ff8c00, #ffd700, #ff4d00, #ff8c00, #ff4d00
-      );
+      background: conic-gradient(from 0deg, #ff4d00, #ff8c00, #ffd700, #ff4d00, #ff8c00, #ff4d00);
       animation: spin 3s linear infinite;
       box-shadow: 0 0 40px rgba(255,77,0,0.4);
     }
@@ -116,16 +109,10 @@
       margin-bottom: 2.5rem;
     }
 
-    .hero-btns {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
     .btn-primary {
       background: var(--accent);
       color: #fff;
-      padding: 0.9rem 2rem;
+      padding: 0.9rem 2.2rem;
       font-size: 1rem;
       font-weight: 700;
       letter-spacing: 0.04em;
@@ -134,24 +121,11 @@
       border-radius: 2px;
       cursor: pointer;
       text-decoration: none;
+      display: inline-block;
     }
     .btn-primary:hover { opacity: 0.85; }
-    .btn-ghost {
-      background: transparent;
-      color: var(--white);
-      padding: 0.9rem 2rem;
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      border: 1px solid #444;
-      border-radius: 2px;
-      cursor: pointer;
-      text-decoration: none;
-    }
-    .btn-ghost:hover { border-color: var(--white); }
 
-    /* HOW IT WORKS */
+    /* SECTION */
     .section {
       padding: 5rem 2rem;
       max-width: 960px;
@@ -172,6 +146,7 @@
       letter-spacing: -0.02em;
     }
 
+    /* STEPS */
     .steps {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -192,57 +167,43 @@
     .step h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
     .step p { font-size: 0.9rem; color: var(--mid); }
 
-    /* SPECS */
-    .specs-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1px;
-      background: #222;
-      border: 1px solid #222;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .spec {
+    /* PRICING */
+    .pricing-card {
       background: var(--grey);
-      padding: 1.5rem;
-    }
-    .spec-val {
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: var(--white);
-      line-height: 1;
-      margin-bottom: 0.3rem;
-    }
-    .spec-label { font-size: 0.8rem; color: var(--mid); letter-spacing: 0.05em; }
-
-    /* CTA STRIP */
-    .cta-strip {
-      background: var(--accent);
-      padding: 4rem 2rem;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 3rem;
+      max-width: 420px;
+      margin: 0 auto;
       text-align: center;
     }
-    .cta-strip h2 {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
+    .price {
+      font-size: 4rem;
       font-weight: 900;
-      margin-bottom: 0.75rem;
-      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 0.25rem;
     }
-    .cta-strip p { color: rgba(255,255,255,0.8); margin-bottom: 2rem; font-size: 1rem; }
-    .btn-white {
-      background: #fff;
-      color: var(--accent);
-      padding: 0.9rem 2.2rem;
+    .price sup { font-size: 1.5rem; vertical-align: top; margin-top: 0.5rem; }
+    .price-period { color: var(--mid); font-size: 0.9rem; margin-bottom: 2rem; }
+    .perks { list-style: none; margin-bottom: 2rem; text-align: left; display: flex; flex-direction: column; gap: 0.75rem; }
+    .perks li { font-size: 0.95rem; display: flex; align-items: flex-start; gap: 0.6rem; }
+    .perks li::before { content: '→'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+    .btn-full {
+      display: block;
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      padding: 1rem;
       font-size: 1rem;
       font-weight: 700;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       border: none;
       border-radius: 2px;
       cursor: pointer;
       text-decoration: none;
-      display: inline-block;
     }
-    .btn-white:hover { opacity: 0.9; }
+    .btn-full:hover { opacity: 0.85; }
 
     /* FOOTER */
     footer {
@@ -256,13 +217,10 @@
       font-size: 0.8rem;
       color: var(--mid);
     }
-    footer a { color: var(--mid); text-decoration: none; }
-    footer a:hover { color: var(--white); }
 
     @media (max-width: 480px) {
       nav { padding: 1rem; }
-      .hero-btns { flex-direction: column; align-items: center; }
-      footer { flex-direction: column; text-align: center; }
+      .pricing-card { padding: 2rem 1.5rem; }
     }
   </style>
 </head>
@@ -270,7 +228,7 @@
 
   <nav>
     <div class="logo">Croc Spin Charm</div>
-    <a class="nav-cta" href="#get">Get Yours</a>
+    <a class="nav-cta" href="#pricing">Start Designing</a>
   </nav>
 
   <!-- HERO -->
@@ -279,73 +237,54 @@
       <div class="disc"></div>
       <div class="disc-hub"></div>
     </div>
-    <h1>Your Croc.<br><span>Now it spins.</span></h1>
-    <p>A charm that snaps into any Croc like a Jibbitz — except the face spins freely. Quarter-sized. Satisfying.</p>
-    <div class="hero-btns">
-      <a class="btn-primary" href="#get">Get Yours</a>
-      <a class="btn-ghost" href="https://github.com/ndispenza1-maker/croc-spin-charm" target="_blank" rel="noopener">Download STL</a>
-    </div>
+    <h1>Your Croc.<br><span>Your design.</span></h1>
+    <p>A spinning charm that snaps into any Croc. Design the face yourself — your logo, your text, your shape. Nothing like it exists.</p>
+    <a class="btn-primary" href="#pricing">Start Designing</a>
   </section>
 
   <!-- HOW IT WORKS -->
   <section class="section">
     <div class="section-label">How it works</div>
-    <h2>Two parts. One satisfying click.</h2>
+    <h2>Design it. Wear it.</h2>
     <div class="steps">
       <div class="step">
         <div class="step-num">01</div>
-        <h3>Snap in the housing</h3>
-        <p>The base presses into your Croc hole exactly like a standard Jibbitz charm.</p>
+        <h3>Subscribe</h3>
+        <p>Unlock the disc designer. Build as many custom spinner faces as you want.</p>
       </div>
       <div class="step">
         <div class="step-num">02</div>
-        <h3>Click on the disc</h3>
-        <p>The quarter-sized spinning disc presses onto the center post — one firm click and it's locked in.</p>
+        <h3>Design your disc</h3>
+        <p>Add your text, logo, or shape. See it live on the spinner before you commit.</p>
       </div>
       <div class="step">
         <div class="step-num">03</div>
-        <h3>Spin it</h3>
-        <p>The disc spins freely inside the housing rim. The edge is hidden. It just looks like magic.</p>
+        <h3>Snap it in</h3>
+        <p>Your charm arrives ready to press into any Croc hole. Spins freely. Looks custom.</p>
       </div>
     </div>
   </section>
 
-  <!-- SPECS -->
-  <section class="section" style="padding-top:0">
-    <div class="section-label">Specs</div>
-    <h2>Built to fit.</h2>
-    <div class="specs-grid">
-      <div class="spec">
-        <div class="spec-val">24.26mm</div>
-        <div class="spec-label">Disc diameter — US quarter size</div>
-      </div>
-      <div class="spec">
-        <div class="spec-val">17mm</div>
-        <div class="spec-label">Jibbitz mushroom peg — standard fit</div>
-      </div>
-      <div class="spec">
-        <div class="spec-val">0.6mm</div>
-        <div class="spec-label">Spin clearance — spins free, no wobble</div>
-      </div>
-      <div class="spec">
-        <div class="spec-val">2</div>
-        <div class="spec-label">Print files — housing + disc</div>
-      </div>
+  <!-- PRICING -->
+  <section class="section" id="pricing" style="padding-top:0">
+    <div class="section-label">Pricing</div>
+    <h2>One plan. Unlimited creativity.</h2>
+    <div class="pricing-card">
+      <div class="price"><sup>$</sup>4.99</div>
+      <div class="price-period">per month</div>
+      <ul class="perks">
+        <li>Full access to the disc designer</li>
+        <li>Unlimited custom designs</li>
+        <li>Text, logos, shapes — anything flat</li>
+        <li>New design drops every month</li>
+        <li>Cancel anytime</li>
+      </ul>
+      <a class="btn-full" href="#" id="subscribe-btn">Start Designing — $4.99/mo</a>
     </div>
   </section>
-
-  <!-- GET YOURS -->
-  <div id="get" class="cta-strip">
-    <h2>Want one?</h2>
-    <p>Print it yourself for free, or order a ready-made one. Stripe checkout coming soon.</p>
-    <a class="btn-white" href="https://github.com/ndispenza1-maker/croc-spin-charm" target="_blank" rel="noopener">Download Free STL</a>
-  </div>
 
   <footer>
     <span>Croc Spin Charm — LFH Holdings</span>
-    <div style="display:flex;gap:1.5rem">
-      <a href="https://github.com/ndispenza1-maker/croc-spin-charm" target="_blank" rel="noopener">GitHub</a>
-    </div>
   </footer>
 
 </body>
