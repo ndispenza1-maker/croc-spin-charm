@@ -12,129 +12,89 @@
       --white: #f5f5f5;
       --accent: #ff4d00;
       --grey: #1a1a1a;
-      --mid: #888;
+      --border: #222;
+      --mid: #666;
       --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
-    body { background: var(--black); color: var(--white); font-family: var(--font); min-height: 100vh; }
+    body { background: var(--black); color: var(--white); font-family: var(--font); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
     nav {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 1.2rem 2rem; border-bottom: 1px solid #222;
-      background: var(--black); position: sticky; top: 0; z-index: 10;
+      padding: 0 2rem; height: 56px; border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
     }
-    .logo { font-size: 1rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--white); }
-    .price-tag { font-size: 1.2rem; font-weight: 900; color: var(--accent); }
+    .logo { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--white); opacity: 0.6; }
+    .logo:hover { opacity: 1; }
 
-    .studio {
-      display: grid;
-      grid-template-columns: 1fr 380px;
-      gap: 0;
-      min-height: calc(100vh - 60px);
-    }
+    .studio { display: grid; grid-template-columns: 1fr 340px; flex: 1; overflow: hidden; }
 
-    /* LEFT — PREVIEW */
+    /* PREVIEW */
     .preview {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 3rem 2rem;
-      border-right: 1px solid #222;
-      background: #0f0f0f;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: #080808; border-right: 1px solid var(--border);
+      gap: 1.25rem;
     }
-    .preview-label {
-      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
-      color: var(--mid); margin-bottom: 1.5rem;
-    }
-    canvas { border-radius: 50%; }
-    .preview-hint {
-      margin-top: 1.5rem; font-size: 0.8rem; color: var(--mid); text-align: center;
-    }
+    .preview-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); }
+    #disc { display: block; }
 
-    /* RIGHT — CONTROLS */
-    .controls {
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      overflow-y: auto;
-    }
+    /* PANEL */
+    .panel { display: flex; flex-direction: column; overflow-y: auto; }
 
-    .control-group h3 {
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em;
-      text-transform: uppercase; color: var(--mid); margin-bottom: 0.75rem;
-    }
+    .section { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
+    .section-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 0.75rem; }
 
-    /* DESIGNS */
-    .design-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.5rem;
+    /* SHAPE GRID */
+    .shape-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; }
+    .shape-tile {
+      background: var(--grey); border: 1.5px solid transparent; border-radius: 3px;
+      padding: 0.6rem 0.25rem; cursor: pointer; text-align: center;
+      transition: border-color 0.12s, background 0.12s;
+      display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
     }
-    .design-btn {
-      aspect-ratio: 1;
-      background: var(--grey);
-      border: 2px solid transparent;
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      transition: border-color 0.15s;
-    }
-    .design-btn:hover { border-color: #444; }
-    .design-btn.active { border-color: var(--accent); }
+    .shape-tile:hover { border-color: #444; }
+    .shape-tile.active { border-color: var(--accent); background: #1f0d00; }
+    .shape-glyph { font-size: 1.3rem; line-height: 1; }
+    .shape-name { font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid); }
+    .shape-tile.active .shape-name { color: var(--accent); }
 
     /* COLORS */
     .color-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .color-swatch {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      border: 3px solid transparent;
-      cursor: pointer;
-      transition: border-color 0.15s;
+    .swatch {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 2.5px solid transparent; cursor: pointer;
+      transition: border-color 0.12s;
     }
-    .color-swatch.active { border-color: var(--white); }
+    .swatch.active { border-color: var(--white); }
 
     /* TEXT */
     .text-input {
-      width: 100%;
-      background: var(--grey);
-      border: 1px solid #333;
-      border-radius: 4px;
-      color: var(--white);
-      font-family: var(--font);
-      font-size: 1rem;
-      padding: 0.75rem 1rem;
-      outline: none;
-      transition: border-color 0.15s;
+      width: 100%; background: var(--grey); border: 1.5px solid var(--border);
+      border-radius: 3px; color: var(--white); font-family: var(--font);
+      font-size: 0.95rem; padding: 0.65rem 0.85rem; outline: none;
+      transition: border-color 0.12s;
     }
     .text-input:focus { border-color: var(--accent); }
-    .text-hint { font-size: 0.75rem; color: var(--mid); margin-top: 0.4rem; }
+    .hint { font-size: 0.7rem; color: var(--mid); margin-top: 0.35rem; }
 
     /* BUY */
-    .buy-section { margin-top: auto; padding-top: 1rem; border-top: 1px solid #222; }
-    .buy-summary {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 1rem;
-    }
-    .buy-summary span { font-size: 0.85rem; color: var(--mid); }
-    .buy-summary strong { font-size: 1.4rem; font-weight: 900; }
+    .buy { padding: 1.25rem 1.5rem; margin-top: auto; }
+    .buy-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.85rem; }
+    .buy-label { font-size: 0.8rem; color: var(--mid); }
+    .buy-price { font-size: 1.6rem; font-weight: 900; }
     .btn-buy {
-      display: block; width: 100%;
-      background: var(--accent); color: #fff;
-      padding: 1rem; font-size: 1rem; font-weight: 700;
-      letter-spacing: 0.06em; text-transform: uppercase;
+      display: block; width: 100%; background: var(--accent); color: #fff;
+      padding: 0.9rem; font-size: 0.9rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
       border: none; border-radius: 2px; cursor: pointer;
     }
-    .btn-buy:hover { opacity: 0.85; }
-    .shipping-note { font-size: 0.72rem; color: var(--mid); text-align: center; margin-top: 0.5rem; }
+    .btn-buy:hover { opacity: 0.88; }
+    .shipping { font-size: 0.68rem; color: var(--mid); text-align: center; margin-top: 0.5rem; }
 
-    @media (max-width: 720px) {
-      .studio { grid-template-columns: 1fr; }
-      .preview { border-right: none; border-bottom: 1px solid #222; padding: 2rem 1rem; }
-      .controls { padding: 1.5rem 1rem; }
+    @media (max-width: 680px) {
+      body { overflow: auto; }
+      .studio { grid-template-columns: 1fr; height: auto; }
+      .preview { padding: 2.5rem 1rem; border-right: none; border-bottom: 1px solid var(--border); }
+      .buy { margin-top: 0; }
     }
   </style>
 </head>
@@ -142,290 +102,288 @@
 
 <nav>
   <a class="logo" href="/">← Croc Spin Charm</a>
-  <div class="price-tag">$4.99</div>
 </nav>
 
 <div class="studio">
 
-  <!-- PREVIEW -->
   <div class="preview">
     <div class="preview-label">Live Preview</div>
-    <canvas id="disc" width="280" height="280"></canvas>
-    <div class="preview-hint">Spinning at actual scale — what you see is what you get.</div>
+    <canvas id="disc" width="260" height="260"></canvas>
   </div>
 
-  <!-- CONTROLS -->
-  <div class="controls">
+  <div class="panel">
 
-    <!-- DESIGNS -->
-    <div class="control-group">
-      <h3>Design</h3>
-      <div class="design-grid">
-        <button class="design-btn active" data-design="blank" title="Blank">⬜</button>
-        <button class="design-btn" data-design="star" title="Star">⭐</button>
-        <button class="design-btn" data-design="heart" title="Heart">❤️</button>
-        <button class="design-btn" data-design="lightning" title="Lightning">⚡</button>
-        <button class="design-btn" data-design="peace" title="Peace">☮️</button>
-        <button class="design-btn" data-design="smile" title="Smiley">😊</button>
-        <button class="design-btn" data-design="flame" title="Flame">🔥</button>
-        <button class="design-btn" data-design="wave" title="Wave">🌊</button>
-      </div>
+    <div class="section">
+      <div class="section-label">Shape</div>
+      <div class="shape-grid" id="shape-grid"></div>
     </div>
 
-    <!-- COLORS -->
-    <div class="control-group">
-      <h3>Color</h3>
-      <div class="color-row">
-        <div class="color-swatch active" data-color="#f5f5f5" style="background:#f5f5f5" title="White"></div>
-        <div class="color-swatch" data-color="#1a1aff" style="background:#1a1aff" title="Blue"></div>
-        <div class="color-swatch" data-color="#ff4d00" style="background:#ff4d00" title="Orange"></div>
-        <div class="color-swatch" data-color="#00cc44" style="background:#00cc44" title="Green"></div>
-        <div class="color-swatch" data-color="#ffcc00" style="background:#ffcc00" title="Yellow"></div>
-        <div class="color-swatch" data-color="#cc00cc" style="background:#cc00cc" title="Purple"></div>
-      </div>
+    <div class="section">
+      <div class="section-label">Color</div>
+      <div class="color-row" id="color-row"></div>
     </div>
 
-    <!-- TEXT -->
-    <div class="control-group">
-      <h3>Text (optional)</h3>
-      <input class="text-input" id="disc-text" type="text" maxlength="12" placeholder="Your word or phrase..." />
-      <div class="text-hint">12 characters max — keeps it readable on a quarter-sized disc.</div>
+    <div class="section">
+      <div class="section-label">Text — optional</div>
+      <input class="text-input" id="txt" type="text" maxlength="10" placeholder="e.g. BESTIE, 2025, ♥" />
+      <div class="hint">10 characters max</div>
     </div>
 
-    <!-- BUY -->
-    <div class="buy-section">
-      <div class="buy-summary">
-        <span>Custom spinner charm</span>
-        <strong>$4.99</strong>
+    <div class="buy">
+      <div class="buy-row">
+        <span class="buy-label">Custom spinner charm</span>
+        <span class="buy-price">$4.99</span>
       </div>
       <button class="btn-buy" id="buy-btn">Add to Cart</button>
-      <div class="shipping-note">+ shipping · Free over $25</div>
+      <div class="shipping">+ shipping &nbsp;·&nbsp; Free over $25</div>
     </div>
 
   </div>
 </div>
 
 <script>
-  const canvas = document.getElementById('disc');
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height, CX = W/2, CY = H/2;
-  const DISC_R = 125, HOLE_R = 10;
+// ── SHAPES ────────────────────────────────────────────────────────
+const SHAPES = [
+  { id: 'star',      glyph: '★', label: 'Star',      draw: drawStar      },
+  { id: 'heart',     glyph: '♥', label: 'Heart',     draw: drawHeart     },
+  { id: 'lightning', glyph: '⚡', label: 'Lightning', draw: drawLightning },
+  { id: 'moon',      glyph: '☽', label: 'Moon',      draw: drawMoon      },
+  { id: 'diamond',   glyph: '◆', label: 'Diamond',   draw: drawDiamond   },
+  { id: 'crown',     glyph: '♛', label: 'Crown',     draw: drawCrown     },
+  { id: 'shield',    glyph: '⛨', label: 'Shield',    draw: drawShield    },
+  { id: 'flame',     glyph: '🔥', label: 'Flame',     draw: drawFlame     },
+  { id: 'peace',     glyph: '☮', label: 'Peace',     draw: drawPeace     },
+  { id: 'paw',       glyph: '🐾', label: 'Paw',       draw: drawPaw       },
+  { id: 'flower',    glyph: '✿', label: 'Flower',    draw: drawFlower    },
+  { id: 'wave',      glyph: '〜', label: 'Wave',      draw: drawWave      },
+];
 
-  let angle = 0;
-  let discColor = '#f5f5f5';
-  let activeDesign = 'blank';
-  let discText = '';
+const COLORS = [
+  { hex: '#f5f5f5', name: 'White'  },
+  { hex: '#1a1aff', name: 'Blue'   },
+  { hex: '#ff4d00', name: 'Orange' },
+  { hex: '#00cc44', name: 'Green'  },
+  { hex: '#ffcc00', name: 'Yellow' },
+  { hex: '#cc00cc', name: 'Purple' },
+  { hex: '#ff1a4b', name: 'Red'    },
+  { hex: '#111111', name: 'Black'  },
+];
 
-  // ── DRAW ──────────────────────────────────────────────────────────
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.save();
-    ctx.translate(CX, CY);
-    ctx.rotate(angle);
+// ── STATE ─────────────────────────────────────────────────────────
+let activeShape = SHAPES[0];
+let activeColor = COLORS[0].hex;
+let discText    = '';
+let angle       = 0;
 
-    // disc face
-    ctx.beginPath();
-    ctx.arc(0, 0, DISC_R, 0, Math.PI*2);
-    ctx.fillStyle = discColor;
-    ctx.fill();
+// ── CANVAS ───────────────────────────────────────────────────────
+const canvas = document.getElementById('disc');
+const ctx    = canvas.getContext('2d');
+const C      = 130; // center
+const R      = 108; // shape radius
 
-    // subtle edge shading
-    const grad = ctx.createRadialGradient(0, 0, DISC_R*0.6, 0, 0, DISC_R);
-    grad.addColorStop(0, 'rgba(0,0,0,0)');
-    grad.addColorStop(1, 'rgba(0,0,0,0.25)');
-    ctx.beginPath();
-    ctx.arc(0, 0, DISC_R, 0, Math.PI*2);
-    ctx.fillStyle = grad;
-    ctx.fill();
+function isLight(hex) {
+  const r = parseInt(hex.slice(1,3),16),
+        g = parseInt(hex.slice(3,5),16),
+        b = parseInt(hex.slice(5,7),16);
+  return (r*299 + g*587 + b*114)/1000 > 140;
+}
 
-    // design
-    drawDesign(activeDesign);
+function render() {
+  ctx.clearRect(0, 0, 260, 260);
+  ctx.save();
+  ctx.translate(C, C);
+  ctx.rotate(angle);
 
-    // text overlay
-    if (discText) {
-      ctx.save();
-      const fs = discText.length > 8 ? 18 : discText.length > 5 ? 22 : 28;
-      ctx.font = `900 ${fs}px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      // contrast color
-      ctx.fillStyle = isLight(discColor) ? '#111' : '#fff';
-      ctx.fillText(discText.toUpperCase(), 0, activeDesign === 'blank' ? 0 : 50);
-      ctx.restore();
-    }
+  ctx.fillStyle = activeColor;
+  activeShape.draw(ctx, R);
 
-    // center hole
-    ctx.beginPath();
-    ctx.arc(0, 0, HOLE_R, 0, Math.PI*2);
-    ctx.fillStyle = '#0a0a0a';
-    ctx.fill();
-    ctx.strokeStyle = '#555';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    ctx.restore();
-  }
-
-  function isLight(hex) {
-    const r = parseInt(hex.slice(1,3),16);
-    const g = parseInt(hex.slice(3,5),16);
-    const b = parseInt(hex.slice(5,7),16);
-    return (r*299 + g*587 + b*114) / 1000 > 128;
-  }
-
-  function drawDesign(design) {
-    const fg = isLight(discColor) ? '#111' : '#fff';
+  if (discText) {
+    const fg = isLight(activeColor) ? '#111' : '#fff';
+    const fs = discText.length > 7 ? 16 : discText.length > 4 ? 20 : 26;
+    ctx.font = `900 ${fs}px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     ctx.fillStyle = fg;
-    ctx.strokeStyle = fg;
-
-    if (design === 'star') {
-      drawStar(0, 0, 5, 70, 30);
-    } else if (design === 'heart') {
-      drawHeart(0, -10, 60);
-    } else if (design === 'lightning') {
-      drawLightning();
-    } else if (design === 'peace') {
-      drawPeace(0, 0, 60);
-    } else if (design === 'smile') {
-      drawSmile(0, 0, 70);
-    } else if (design === 'flame') {
-      drawFlame(0, 10, 55);
-    } else if (design === 'wave') {
-      drawWave();
-    }
+    ctx.fillText(discText.toUpperCase(), 0, 0);
   }
 
-  function drawStar(cx, cy, pts, outerR, innerR) {
+  ctx.restore();
+  angle += 0.016;
+  requestAnimationFrame(render);
+}
+render();
+
+// ── SHAPE DRAW FUNCTIONS ──────────────────────────────────────────
+function drawStar(ctx, r) {
+  ctx.beginPath();
+  for (let i = 0; i < 10; i++) {
+    const rad = i % 2 === 0 ? r : r * 0.42;
+    const a   = (i * Math.PI / 5) - Math.PI / 2;
+    i === 0 ? ctx.moveTo(rad*Math.cos(a), rad*Math.sin(a))
+            : ctx.lineTo(rad*Math.cos(a), rad*Math.sin(a));
+  }
+  ctx.closePath(); ctx.fill();
+}
+
+function drawHeart(ctx, r) {
+  const s = r / 70;
+  ctx.save(); ctx.scale(s, s);
+  ctx.beginPath();
+  ctx.moveTo(0, -10);
+  ctx.bezierCurveTo(-70, -80, -110,  15, 0,  75);
+  ctx.bezierCurveTo( 110,  15,  70, -80, 0, -10);
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+function drawLightning(ctx, r) {
+  const w = r * 0.45, h = r;
+  ctx.beginPath();
+  ctx.moveTo( w * 0.3, -h);
+  ctx.lineTo(-w * 0.5,  h * 0.05);
+  ctx.lineTo( w * 0.15, h * 0.05);
+  ctx.lineTo(-w * 0.3,  h);
+  ctx.lineTo( w * 0.5, -h * 0.05);
+  ctx.lineTo(-w * 0.15,-h * 0.05);
+  ctx.closePath(); ctx.fill();
+}
+
+function drawMoon(ctx, r) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(0, 0, r, 0, Math.PI * 2);
+  ctx.arc(r * 0.32, -r * 0.08, r * 0.76, 0, Math.PI * 2, true);
+  ctx.fill('evenodd');
+  ctx.restore();
+}
+
+function drawDiamond(ctx, r) {
+  ctx.beginPath();
+  ctx.moveTo(0, -r);
+  ctx.lineTo(r * 0.65,  0);
+  ctx.lineTo(0,  r);
+  ctx.lineTo(-r * 0.65, 0);
+  ctx.closePath(); ctx.fill();
+}
+
+function drawCrown(ctx, r) {
+  const by = r * 0.45, ty = -r * 0.2;
+  ctx.beginPath();
+  ctx.moveTo(-r * 0.85, by);
+  ctx.lineTo(-r * 0.85, ty);
+  ctx.lineTo(-r * 0.45, ty + r * 0.5);
+  ctx.lineTo(0,          ty - r * 0.3);
+  ctx.lineTo( r * 0.45, ty + r * 0.5);
+  ctx.lineTo( r * 0.85, ty);
+  ctx.lineTo( r * 0.85, by);
+  ctx.closePath(); ctx.fill();
+  // base band
+  ctx.fillRect(-r * 0.85, by, r * 1.7, r * 0.25);
+}
+
+function drawShield(ctx, r) {
+  ctx.beginPath();
+  ctx.moveTo(0, r * 0.95);
+  ctx.bezierCurveTo(-r*0.55, r*0.5, -r*0.95, r*0.1, -r*0.95, -r*0.4);
+  ctx.lineTo(-r * 0.95, -r * 0.7);
+  ctx.bezierCurveTo(-r*0.95, -r*0.95, -r*0.65, -r*0.95, 0, -r*0.95);
+  ctx.bezierCurveTo( r*0.65, -r*0.95,  r*0.95, -r*0.95, r*0.95, -r*0.7);
+  ctx.lineTo(r * 0.95, -r * 0.4);
+  ctx.bezierCurveTo(r*0.95, r*0.1, r*0.55, r*0.5, 0, r*0.95);
+  ctx.closePath(); ctx.fill();
+}
+
+function drawFlame(ctx, r) {
+  ctx.beginPath();
+  ctx.moveTo(0, r);
+  ctx.bezierCurveTo(-r*0.55, r*0.4, -r*0.65, -r*0.1, -r*0.2, -r*0.45);
+  ctx.bezierCurveTo(-r*0.3,  -r*0.65, -r*0.1, -r*0.85, 0, -r);
+  ctx.bezierCurveTo( r*0.1,  -r*0.85,  r*0.3, -r*0.65,  r*0.2, -r*0.45);
+  ctx.bezierCurveTo( r*0.65, -r*0.1,   r*0.55, r*0.4, 0, r);
+  ctx.closePath(); ctx.fill();
+}
+
+function drawPeace(ctx, r) {
+  const fg = isLight(activeColor) ? '#111' : '#fff'; // not needed here, caller sets fillStyle
+  ctx.save();
+  ctx.lineWidth = r * 0.12;
+  ctx.strokeStyle = activeColor;
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(0, -r); ctx.lineTo(0, r);
+  ctx.moveTo(0, 0);  ctx.lineTo(-r * Math.cos(Math.PI/6), r * Math.sin(Math.PI/6));
+  ctx.moveTo(0, 0);  ctx.lineTo( r * Math.cos(Math.PI/6), r * Math.sin(Math.PI/6));
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawPaw(ctx, r) {
+  ctx.beginPath(); ctx.arc(0, r*0.18, r*0.52, 0, Math.PI*2); ctx.fill();
+  [[-r*0.52,-r*0.28],[-r*0.18,-r*0.6],[r*0.18,-r*0.6],[r*0.52,-r*0.28]].forEach(([x,y]) => {
+    ctx.beginPath(); ctx.arc(x, y, r*0.22, 0, Math.PI*2); ctx.fill();
+  });
+}
+
+function drawFlower(ctx, r) {
+  const petals = 6, pr = r*0.42, cr = r*0.28;
+  for (let i = 0; i < petals; i++) {
+    const a = (i/petals) * Math.PI*2;
     ctx.beginPath();
-    for (let i = 0; i < pts * 2; i++) {
-      const r = i % 2 === 0 ? outerR : innerR;
-      const a = (i * Math.PI / pts) - Math.PI/2;
-      i === 0 ? ctx.moveTo(cx + r*Math.cos(a), cy + r*Math.sin(a))
-               : ctx.lineTo(cx + r*Math.cos(a), cy + r*Math.sin(a));
-    }
-    ctx.closePath();
+    ctx.arc(Math.cos(a)*(r-pr), Math.sin(a)*(r-pr), pr, 0, Math.PI*2);
     ctx.fill();
   }
+  ctx.beginPath(); ctx.arc(0, 0, cr, 0, Math.PI*2); ctx.fill();
+}
 
-  function drawHeart(cx, cy, size) {
-    const s = size / 60;
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.scale(s, s);
+function drawWave(ctx, r) {
+  ctx.save();
+  ctx.lineWidth = r * 0.14;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = activeColor;
+  [-r*0.28, r*0.28].forEach(oy => {
     ctx.beginPath();
-    ctx.moveTo(0, 20);
-    ctx.bezierCurveTo(-60, -20, -60, -70, 0, -40);
-    ctx.bezierCurveTo(60, -70, 60, -20, 0, 20);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-  }
-
-  function drawLightning() {
-    ctx.beginPath();
-    ctx.moveTo(15, -70);
-    ctx.lineTo(-10, 0);
-    ctx.lineTo(10, 0);
-    ctx.lineTo(-15, 70);
-    ctx.lineTo(30, -15);
-    ctx.lineTo(10, -15);
-    ctx.lineTo(35, -70);
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  function drawPeace(cx, cy, r) {
-    ctx.lineWidth = 8;
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI*2);
+    ctx.moveTo(-r, oy);
+    ctx.bezierCurveTo(-r*0.5, oy - r*0.45, -r*0.1, oy + r*0.45,  r*0.3, oy);
+    ctx.bezierCurveTo( r*0.6, oy - r*0.35,  r*0.85, oy + r*0.3,  r,     oy);
     ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(cx, cy - r);
-    ctx.lineTo(cx, cy + r);
-    ctx.moveTo(cx, cy);
-    ctx.lineTo(cx - r * Math.cos(Math.PI/6), cy + r * Math.sin(Math.PI/6));
-    ctx.moveTo(cx, cy);
-    ctx.lineTo(cx + r * Math.cos(Math.PI/6), cy + r * Math.sin(Math.PI/6));
-    ctx.stroke();
-    ctx.lineWidth = 1;
-  }
-
-  function drawSmile(cx, cy, r) {
-    ctx.lineWidth = 7;
-    // face outline
-    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
-    // eyes
-    ctx.beginPath();
-    ctx.arc(cx - 22, cy - 20, 7, 0, Math.PI*2); ctx.fill();
-    ctx.arc(cx + 22, cy - 20, 7, 0, Math.PI*2); ctx.fill();
-    // smile
-    ctx.beginPath();
-    ctx.arc(cx, cy + 10, 35, 0.15*Math.PI, 0.85*Math.PI);
-    ctx.stroke();
-    ctx.lineWidth = 1;
-  }
-
-  function drawFlame(cx, cy, h) {
-    ctx.beginPath();
-    ctx.moveTo(cx, cy + h);
-    ctx.bezierCurveTo(cx - 30, cy + h*0.4, cx - 35, cy - h*0.1, cx - 10, cy - h*0.4);
-    ctx.bezierCurveTo(cx - 15, cy - h*0.6, cx - 5, cy - h*0.85, cx, cy - h);
-    ctx.bezierCurveTo(cx + 5, cy - h*0.85, cx + 15, cy - h*0.6, cx + 10, cy - h*0.4);
-    ctx.bezierCurveTo(cx + 35, cy - h*0.1, cx + 30, cy + h*0.4, cx, cy + h);
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  function drawWave() {
-    ctx.lineWidth = 9;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(-90, -15);
-    ctx.bezierCurveTo(-55, -50, -35, 20, 0, -15);
-    ctx.bezierCurveTo(35, -50, 55, 20, 90, -15);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(-90, 20);
-    ctx.bezierCurveTo(-55, -15, -35, 55, 0, 20);
-    ctx.bezierCurveTo(35, -15, 55, 55, 90, 20);
-    ctx.stroke();
-    ctx.lineWidth = 1; ctx.lineCap = 'butt';
-  }
-
-  // ── ANIMATE ───────────────────────────────────────────────────────
-  function loop() {
-    angle += 0.018;
-    draw();
-    requestAnimationFrame(loop);
-  }
-  loop();
-
-  // ── CONTROLS ──────────────────────────────────────────────────────
-  document.querySelectorAll('.design-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.design-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeDesign = btn.dataset.design;
-    });
   });
+  ctx.restore();
+}
 
-  document.querySelectorAll('.color-swatch').forEach(sw => {
-    sw.addEventListener('click', () => {
-      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-      sw.classList.add('active');
-      discColor = sw.dataset.color;
-    });
+// ── BUILD UI ──────────────────────────────────────────────────────
+const shapeGrid = document.getElementById('shape-grid');
+SHAPES.forEach(s => {
+  const tile = document.createElement('div');
+  tile.className = 'shape-tile' + (s.id === activeShape.id ? ' active' : '');
+  tile.innerHTML = `<span class="shape-glyph">${s.glyph}</span><span class="shape-name">${s.label}</span>`;
+  tile.addEventListener('click', () => {
+    document.querySelectorAll('.shape-tile').forEach(t => t.classList.remove('active'));
+    tile.classList.add('active');
+    activeShape = s;
   });
+  shapeGrid.appendChild(tile);
+});
 
-  document.getElementById('disc-text').addEventListener('input', e => {
-    discText = e.target.value;
+const colorRow = document.getElementById('color-row');
+COLORS.forEach((c, i) => {
+  const sw = document.createElement('div');
+  sw.className = 'swatch' + (i === 0 ? ' active' : '');
+  sw.style.background = c.hex;
+  sw.title = c.name;
+  sw.addEventListener('click', () => {
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+    sw.classList.add('active');
+    activeColor = c.hex;
   });
+  colorRow.appendChild(sw);
+});
 
-  document.getElementById('buy-btn').addEventListener('click', () => {
-    // Stripe checkout wires in here
-    alert('Stripe checkout coming soon!');
-  });
+document.getElementById('txt').addEventListener('input', e => { discText = e.target.value; });
+
+document.getElementById('buy-btn').addEventListener('click', () => {
+  // Stripe checkout wires in here
+  alert('Checkout coming soon!');
+});
 </script>
-
 </body>
 </html>
