@@ -211,12 +211,10 @@ const COLORS = [
   { hex: '#111111', name: 'Black'  },
 ];
 
-// ── STATE ────────────────────────────────────────────────────────
-let icons = {};          // loaded from icons.json
-let activeIcon = null;   // { name, paths }
+let icons = {};
+let activeIcon = null;
 let activeColor = COLORS[0].hex;
 let angle = 0;
-let isCustom = false;
 
 // ── CANVAS ───────────────────────────────────────────────────────
 const canvas = document.getElementById('disc');
@@ -233,36 +231,46 @@ function render() {
   ctx.save();
   ctx.translate(C, C);
   ctx.rotate(angle);
-
   if (activeIcon) {
-    // Scale the 16×16 viewbox to fill the disc
     const scale = (R * 2) / 16;
     ctx.save();
     ctx.scale(scale, scale);
     ctx.translate(-8, -8);
     ctx.fillStyle = activeColor;
-    ctx.strokeStyle = activeColor;
-    activeIcon.paths.forEach(d => {
-      const p = new Path2D(d);
-      ctx.fill(p, 'evenodd');
-    });
+    activeIcon.paths.forEach(d => { ctx.fill(new Path2D(d), 'evenodd'); });
     ctx.restore();
   } else {
-    // placeholder ring
     ctx.beginPath();
     ctx.arc(0, 0, R, 0, Math.PI*2);
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 2;
     ctx.stroke();
   }
-
   ctx.restore();
   angle += 0.016;
   requestAnimationFrame(render);
 }
 render();
 
-// ── LOAD ICONS ───────────────────────────────────────────────────
+// ── HELPERS ──────────────────────────────────────────────────────
+function svgEl(paths, size) {
+  const p = paths.map(d => `<path d="${d}" fill-rule="evenodd"/>`).join('');
+  return `<svg viewBox="0 0 16 16" width="${size}" height="${size}" fill="currentColor">${p}</svg>`;
+}
+
+function selectIcon(name) {
+  if (!icons[name]) return;
+  activeIcon = { name, paths: icons[name].paths };
+  document.getElementById('selected-name').textContent = name.replace(/-/g,' ');
+  document.getElementById('buy-price').textContent = '$4.99';
+  document.querySelectorAll('.shape-tile').forEach(t => {
+    t.classList.toggle('active', t.dataset.name === name);
+  });
+  const sel = document.getElementById('shape-select');
+  if (sel.value !== name) sel.value = name;
+}
+
+// ── LOAD ─────────────────────────────────────────────────────────
 fetch('/icons.json')
   .then(r => r.json())
   .then(data => {
@@ -271,37 +279,9 @@ fetch('/icons.json')
     buildSelect();
     const first = FEATURED.find(n => icons[n]);
     if (first) selectIcon(first);
-  });
+  })
+  .catch(err => console.error('icons.json failed:', err));
 
-function buildSelect() {
-  const sel = document.getElementById('shape-select');
-  Object.keys(icons).sort().forEach(name => {
-    const opt = document.createElement('option');
-    opt.value = name;
-    opt.textContent = name.replace(/-/g, ' ');
-    sel.appendChild(opt);
-  });
-  sel.addEventListener('change', () => {
-    const name = sel.value;
-    if (name) selectIcon(name);
-  });
-}
-
-// ── SELECT ───────────────────────────────────────────────────────
-function selectIcon(name) {
-  if (!icons[name]) return;
-  activeIcon = { name, paths: icons[name].paths };
-  isCustom = false;
-  document.getElementById('selected-name').textContent = name;
-  document.getElementById('buy-label').textContent = 'Custom spinner charm';
-  document.getElementById('buy-price').textContent = '$4.99';
-  // mark active in grids
-  document.querySelectorAll('.shape-tile, .icon-tile').forEach(t => {
-    t.classList.toggle('active', t.dataset.name === name);
-  });
-}
-
-// ── FEATURED ─────────────────────────────────────────────────────
 function buildFeatured() {
   const grid = document.getElementById('featured-grid');
   grid.innerHTML = '';
@@ -317,7 +297,18 @@ function buildFeatured() {
   });
 }
 
-// ── SEARCH — handled in buildSelect() ───────────────────────────
+function buildSelect() {
+  const sel = document.getElementById('shape-select');
+  Object.keys(icons).sort().forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name.replace(/-/g, ' ');
+    sel.appendChild(opt);
+  });
+  sel.addEventListener('change', () => {
+    if (sel.value) selectIcon(sel.value);
+  });
+}
 
 // ── COLORS ───────────────────────────────────────────────────────
 const colorRow = document.getElementById('color-row');
@@ -344,12 +335,10 @@ document.getElementById('modal-cancel').addEventListener('click', () => {
 document.getElementById('modal-submit').addEventListener('click', () => {
   const desc = document.getElementById('custom-desc').value.trim();
   if (!desc) return;
-  // Stripe custom checkout wires in here
-  alert('Custom request received! We\'ll be in touch to confirm before charging.');
+  alert("Custom request received! We'll be in touch to confirm before charging.");
   document.getElementById('modal').classList.remove('open');
 });
 
-// ── BUY ──────────────────────────────────────────────────────────
 document.getElementById('buy-btn').addEventListener('click', () => {
   alert('Checkout coming soon!');
 });
