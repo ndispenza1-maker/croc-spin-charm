@@ -39,7 +39,7 @@
     .section-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 0.65rem; }
 
     /* FEATURED TILES */
-    .shape-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.35rem; }
+    .shape-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.35rem; }
     .shape-tile {
       background: var(--grey); border: 1.5px solid transparent; border-radius: 3px;
       padding: 0.45rem 0.2rem; cursor: pointer; text-align: center;
@@ -53,13 +53,19 @@
     .shape-tile.active .shape-name { color: var(--accent); }
 
     /* SEARCH */
-    .search-wrap { position: relative; margin-bottom: 0.65rem; flex-shrink: 0; }
-    .search-input {
+    .select-wrap { position: relative; }
+    .shape-select {
       width: 100%; background: var(--grey); border: 1.5px solid var(--border);
       border-radius: 3px; color: var(--white); font-family: var(--font);
-      font-size: 0.9rem; padding: 0.6rem 0.85rem; outline: none; transition: border-color 0.12s;
+      font-size: 0.9rem; padding: 0.6rem 0.85rem; outline: none;
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16'%3E%3Cpath fill='%23888' d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.85rem center;
+      cursor: pointer; transition: border-color 0.12s;
     }
-    .search-input:focus { border-color: var(--accent); }
+    .shape-select:focus { border-color: var(--accent); outline: none; }
+    .shape-select option { background: #1a1a1a; color: var(--white); }
 
 
     .btn-custom {
@@ -146,13 +152,13 @@
     <!-- SEARCH -->
     <div class="section">
       <div class="section-label">All Shapes</div>
-      <div class="search-wrap">
-        <input class="search-input" id="search" type="text" placeholder="Type to search 2000+ shapes..." autocomplete="off" list="shapes-list" />
-        <datalist id="shapes-list"></datalist>
+      <div class="select-wrap">
+        <select class="shape-select" id="shape-select">
+          <option value="">— Choose a shape —</option>
+        </select>
       </div>
-      <div class="no-results" id="no-results" style="display:none;padding:0.75rem 0;">
-        <p style="font-size:0.82rem;color:var(--mid);margin-bottom:0.65rem;">No match — request a custom shape.</p>
-        <button class="btn-custom" id="request-btn">Request Custom — $9.99</button>
+      <div style="padding:0.6rem 0 0;">
+        <button class="btn-custom" id="request-btn" style="font-size:0.72rem;padding:0.45rem 0.9rem;">Don't see yours? Request Custom — $9.99</button>
       </div>
     </div>
 
@@ -191,8 +197,7 @@
 <script>
 const FEATURED = [
   'star-fill','heart-fill','lightning-fill','moon-fill',
-  'diamond-fill','gem','shield-fill','fire',
-  'peace-fill','emoji-smile-fill','flower1','balloon-fill'
+  'diamond-fill','shield-fill','fire','emoji-smile-fill'
 ];
 
 const COLORS = [
@@ -263,18 +268,23 @@ fetch('/icons.json')
   .then(data => {
     icons = data;
     buildFeatured();
-    buildDatalist();
+    buildSelect();
     const first = FEATURED.find(n => icons[n]);
     if (first) selectIcon(first);
   });
 
-function buildDatalist() {
-  const dl = document.getElementById('shapes-list');
-  Object.keys(icons).forEach(name => {
+function buildSelect() {
+  const sel = document.getElementById('shape-select');
+  Object.keys(icons).sort().forEach(name => {
     const opt = document.createElement('option');
-    opt.value = name.replace(/-/g, ' ');
-    opt.dataset.key = name;
-    dl.appendChild(opt);
+    opt.value = name;
+    opt.textContent = name.replace(/-/g, ' ');
+    sel.appendChild(opt);
+  });
+  sel.addEventListener('change', () => {
+    const name = sel.value;
+    if (name) selectIcon(name);
+    document.getElementById('no-results').style.display = 'none';
   });
 }
 
@@ -308,26 +318,7 @@ function buildFeatured() {
   });
 }
 
-// ── SEARCH ───────────────────────────────────────────────────────
-const searchEl = document.getElementById('search');
-const noRes    = document.getElementById('no-results');
-
-searchEl.addEventListener('change', () => {
-  const q   = searchEl.value.trim();
-  const key = q.replace(/ /g, '-').toLowerCase();
-  if (icons[key]) {
-    selectIcon(key);
-    noRes.style.display = 'none';
-  } else if (q) {
-    noRes.style.display = 'block';
-  } else {
-    noRes.style.display = 'none';
-  }
-});
-
-searchEl.addEventListener('input', () => {
-  if (!searchEl.value.trim()) noRes.style.display = 'none';
-});
+// ── SEARCH — handled in buildSelect() ───────────────────────────
 
 // ── COLORS ───────────────────────────────────────────────────────
 const colorRow = document.getElementById('color-row');
