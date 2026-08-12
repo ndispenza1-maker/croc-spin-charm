@@ -35,7 +35,7 @@
     .panel { display: flex; flex-direction: column; overflow: hidden; }
 
     .section { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-    .section.grow { flex: 1; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
+
     .section-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 0.65rem; }
 
     /* FEATURED TILES */
@@ -60,25 +60,8 @@
       font-size: 0.9rem; padding: 0.6rem 0.85rem; outline: none; transition: border-color 0.12s;
     }
     .search-input:focus { border-color: var(--accent); }
-    .search-count { font-size: 0.65rem; color: var(--mid); margin-top: 0.3rem; }
 
-    /* RESULTS */
-    .results { overflow-y: auto; flex: 1; min-height: 0; }
-    .results-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.35rem; padding: 0.1rem; }
-    .icon-tile {
-      background: var(--grey); border: 1.5px solid transparent; border-radius: 3px;
-      padding: 0.5rem 0.2rem; cursor: pointer; text-align: center;
-      display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
-      transition: border-color 0.12s;
-    }
-    .icon-tile:hover { border-color: #444; }
-    .icon-tile.active { border-color: var(--accent); background: #1f0d00; }
-    .icon-tile svg { width: 24px; height: 24px; fill: var(--white); display: block; }
-    .icon-tile .icon-name { font-size: 0.5rem; color: var(--mid); text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-    .icon-tile.active .icon-name { color: var(--accent); }
 
-    .no-results { padding: 1rem 0; text-align: center; }
-    .no-results p { font-size: 0.85rem; color: var(--mid); margin-bottom: 0.75rem; }
     .btn-custom {
       background: transparent; border: 1.5px solid var(--accent); color: var(--accent);
       padding: 0.6rem 1.2rem; font-size: 0.8rem; font-weight: 700;
@@ -161,18 +144,15 @@
     </div>
 
     <!-- SEARCH -->
-    <div class="section grow">
+    <div class="section">
       <div class="section-label">All Shapes</div>
       <div class="search-wrap">
-        <input class="search-input" id="search" type="text" placeholder="Search 2000+ shapes..." autocomplete="off" />
-        <div class="search-count" id="search-count"></div>
+        <input class="search-input" id="search" type="text" placeholder="Type to search 2000+ shapes..." autocomplete="off" list="shapes-list" />
+        <datalist id="shapes-list"></datalist>
       </div>
-      <div class="results">
-        <div class="results-grid" id="results-grid"></div>
-        <div class="no-results" id="no-results" style="display:none">
-          <p>No match found — request a custom shape.</p>
-          <button class="btn-custom" id="request-btn">Request Custom — $9.99</button>
-        </div>
+      <div class="no-results" id="no-results" style="display:none;padding:0.75rem 0;">
+        <p style="font-size:0.82rem;color:var(--mid);margin-bottom:0.65rem;">No match — request a custom shape.</p>
+        <button class="btn-custom" id="request-btn">Request Custom — $9.99</button>
       </div>
     </div>
 
@@ -283,11 +263,20 @@ fetch('/icons.json')
   .then(data => {
     icons = data;
     buildFeatured();
-    renderSearch('');
-    // activate first featured
+    buildDatalist();
     const first = FEATURED.find(n => icons[n]);
     if (first) selectIcon(first);
   });
+
+function buildDatalist() {
+  const dl = document.getElementById('shapes-list');
+  Object.keys(icons).forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name.replace(/-/g, ' ');
+    opt.dataset.key = name;
+    dl.appendChild(opt);
+  });
+}
 
 // ── SELECT ───────────────────────────────────────────────────────
 function selectIcon(name) {
@@ -320,50 +309,25 @@ function buildFeatured() {
 }
 
 // ── SEARCH ───────────────────────────────────────────────────────
-let searchTimer;
-document.getElementById('search').addEventListener('input', e => {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => renderSearch(e.target.value.trim().toLowerCase()), 120);
+const searchEl = document.getElementById('search');
+const noRes    = document.getElementById('no-results');
+
+searchEl.addEventListener('change', () => {
+  const q   = searchEl.value.trim();
+  const key = q.replace(/ /g, '-').toLowerCase();
+  if (icons[key]) {
+    selectIcon(key);
+    noRes.style.display = 'none';
+  } else if (q) {
+    noRes.style.display = 'block';
+  } else {
+    noRes.style.display = 'none';
+  }
 });
 
-function renderSearch(q) {
-  const grid = document.getElementById('results-grid');
-  const noRes = document.getElementById('no-results');
-  const count = document.getElementById('search-count');
-  grid.innerHTML = '';
-
-  const names = Object.keys(icons);
-  const filtered = q ? names.filter(n => n.includes(q)) : names.slice(0, 80);
-
-  count.textContent = q
-    ? `${filtered.length} result${filtered.length !== 1 ? 's' : ''}`
-    : `Showing 80 of ${names.length} — type to search`;
-
-  if (filtered.length === 0) {
-    noRes.style.display = 'block';
-    grid.style.display = 'none';
-    return;
-  }
-  noRes.style.display = 'none';
-  grid.style.display = 'grid';
-
-  const limit = Math.min(filtered.length, q ? 200 : 80);
-  for (let i = 0; i < limit; i++) {
-    const name = filtered[i];
-    const tile = document.createElement('div');
-    tile.className = 'icon-tile';
-    tile.dataset.name = name;
-    tile.innerHTML = svgEl(icons[name].paths, 24) +
-      `<span class="icon-name">${name.replace(/-/g,' ')}</span>`;
-    tile.addEventListener('click', () => selectIcon(name));
-    grid.appendChild(tile);
-  }
-}
-
-function svgEl(paths, size) {
-  const pStr = paths.map(d => `<path d="${d}" fill-rule="evenodd"/>`).join('');
-  return `<svg viewBox="0 0 16 16" width="${size}" height="${size}" fill="currentColor">${pStr}</svg>`;
-}
+searchEl.addEventListener('input', () => {
+  if (!searchEl.value.trim()) noRes.style.display = 'none';
+});
 
 // ── COLORS ───────────────────────────────────────────────────────
 const colorRow = document.getElementById('color-row');
