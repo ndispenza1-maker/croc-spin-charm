@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart — Croc Spin Charm</title>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #0a0a0a; --white: #f5f5f5; --accent: #ff4d00;
+      --grey: #1a1a1a; --border: #222; --mid: #666;
+      --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    body { background: var(--black); color: var(--white); font-family: var(--font); min-height: 100vh; }
+
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 2rem; height: 56px; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; background: var(--black); z-index: 10;
+    }
+    .logo { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--white); opacity: 0.6; }
+    .logo:hover { opacity: 1; }
+    .add-more { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; color: var(--accent); }
+
+    .page { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+    h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 0.3rem; }
+    .sub { font-size: 0.85rem; color: var(--mid); margin-bottom: 2rem; }
+
+    /* BUNDLE GROUP */
+    .group { margin-bottom: 2rem; }
+    .group-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.6rem 1rem; border-radius: 3px 3px 0 0;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    }
+    .group-header.bundle { background: var(--accent); color: #fff; }
+    .group-header.single { background: #1e1e1e; color: var(--mid); border: 1px solid var(--border); border-bottom: none; }
+    .group-price { font-size: 1rem; font-weight: 900; }
+
+    .items { border: 1px solid var(--border); border-radius: 0 0 3px 3px; overflow: hidden; }
+    .item {
+      display: flex; align-items: center; gap: 1.25rem;
+      padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+      background: var(--grey);
+    }
+    .item:last-child { border-bottom: none; }
+    .item-img { width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0; background: #111; }
+    .item-info { flex: 1; }
+    .item-name { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.2rem; text-transform: capitalize; }
+    .item-color { font-size: 0.75rem; color: var(--mid); display: flex; align-items: center; gap: 0.4rem; }
+    .color-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .item-price { font-size: 0.9rem; font-weight: 700; color: var(--mid); }
+    .item-remove { background: none; border: none; color: #444; font-size: 1.1rem; cursor: pointer; padding: 0.25rem; line-height: 1; }
+    .item-remove:hover { color: var(--accent); }
+
+    /* BUNDLE SLOT (empty) */
+    .slot {
+      display: flex; align-items: center; gap: 1.25rem;
+      padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+      background: #111; opacity: 0.5;
+    }
+    .slot:last-child { border-bottom: none; }
+    .slot-circle { width: 56px; height: 56px; border-radius: 50%; border: 2px dashed #333; flex-shrink: 0; }
+    .slot-text { font-size: 0.82rem; color: var(--mid); }
+
+    /* SUMMARY */
+    .summary {
+      background: var(--grey); border: 1px solid var(--border);
+      border-radius: 4px; padding: 1.5rem; margin-top: 1rem;
+    }
+    .summary-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.6rem; }
+    .summary-row.total { font-size: 1.1rem; font-weight: 900; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); margin-bottom: 0; }
+    .summary-row .label { color: var(--mid); }
+    .free { color: #00cc44; font-weight: 700; }
+    .shipping-bar { margin: 0.75rem 0 1.25rem; }
+    .shipping-bar-track { background: #333; border-radius: 99px; height: 4px; margin-top: 0.4rem; }
+    .shipping-bar-fill { background: var(--accent); border-radius: 99px; height: 4px; transition: width 0.3s; }
+    .shipping-hint { font-size: 0.72rem; color: var(--mid); margin-top: 0.3rem; }
+
+    .btn-checkout {
+      display: block; width: 100%; background: var(--accent); color: #fff;
+      padding: 1rem; font-size: 1rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border: none; border-radius: 2px; cursor: pointer; margin-top: 1.25rem;
+    }
+    .btn-checkout:hover { opacity: 0.88; }
+    .btn-checkout:disabled { opacity: 0.4; cursor: default; }
+
+    /* EMPTY */
+    .empty { text-align: center; padding: 5rem 2rem; }
+    .empty h2 { font-size: 1.5rem; font-weight: 900; margin-bottom: 0.75rem; }
+    .empty p { color: var(--mid); margin-bottom: 2rem; }
+    .btn-design {
+      display: inline-block; background: var(--accent); color: #fff;
+      padding: 0.85rem 2rem; font-size: 0.9rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border-radius: 2px; text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="/">← Croc Spin Charm</a>
+  <a class="add-more" href="/studio.html">+ Add More</a>
+</nav>
+
+<div class="page">
+  <div id="empty" class="empty" style="display:none">
+    <h2>Your cart is empty.</h2>
+    <p>Head to the studio and design your first charm.</p>
+    <a class="btn-design" href="/studio.html">Start Designing</a>
+  </div>
+
+  <div id="cart-content" style="display:none">
+    <h1>Your Cart</h1>
+    <p class="sub">Every 3 charms = $9.99 bundle. Singles are $4.99 each.</p>
+    <div id="groups"></div>
+
+    <div class="summary">
+      <div class="shipping-bar">
+        <div class="summary-row" style="margin-bottom:0.2rem">
+          <span class="label" id="shipping-label">Add more to unlock free shipping</span>
+          <span id="shipping-cost">—</span>
+        </div>
+        <div class="shipping-bar-track">
+          <div class="shipping-bar-fill" id="shipping-fill" style="width:0%"></div>
+        </div>
+        <div class="shipping-hint">Free shipping over $25</div>
+      </div>
+      <div class="summary-row"><span class="label">Subtotal</span><span id="subtotal">$0.00</span></div>
+      <div class="summary-row"><span class="label">Shipping</span><span id="shipping-line">—</span></div>
+      <div class="summary-row total"><span>Total</span><span id="total">$0.00</span></div>
+      <button class="btn-checkout" id="checkout-btn">Checkout</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SHIPPING = 4.99;
+const FREE_THRESHOLD = 25;
+const BUNDLE_PRICE = 9.99;
+const SINGLE_PRICE = 4.99;
+
+const COLOR_NAMES = {
+  '#f5f5f5':'White','#1a1aff':'Blue','#ff4d00':'Orange',
+  '#00cc44':'Green','#ffcc00':'Yellow','#cc00cc':'Purple',
+  '#ff1a4b':'Red','#111111':'Black'
+};
+
+function getCart() { return JSON.parse(localStorage.getItem('croc-cart') || '[]'); }
+function saveCart(c) { localStorage.setItem('croc-cart', JSON.stringify(c)); }
+
+function removeItem(id) {
+  saveCart(getCart().filter(i => i.id !== id));
+  renderCart();
+}
+
+function renderCart() {
+  const cart = getCart();
+  if (cart.length === 0) {
+    document.getElementById('empty').style.display = 'block';
+    document.getElementById('cart-content').style.display = 'none';
+    return;
+  }
+  document.getElementById('empty').style.display = 'none';
+  document.getElementById('cart-content').style.display = 'block';
+
+  // Split into bundles of 3 + remainder singles
+  const groups = [];
+  for (let i = 0; i < cart.length; i += 3) {
+    const chunk = cart.slice(i, i + 3);
+    groups.push(chunk);
+  }
+
+  let subtotal = 0;
+  const groupsEl = document.getElementById('groups');
+  groupsEl.innerHTML = '';
+
+  groups.forEach((group, gi) => {
+    const isBundle = group.length === 3;
+    const groupPrice = isBundle ? BUNDLE_PRICE : group.length * SINGLE_PRICE;
+    subtotal += groupPrice;
+
+    const groupDiv = document.createElement('div');
+    groupDiv.className = 'group';
+
+    const header = document.createElement('div');
+    header.className = 'group-header ' + (isBundle ? 'bundle' : 'single');
+    header.innerHTML = isBundle
+      ? `<span>Bundle of 3</span><span class="group-price">$${BUNDLE_PRICE.toFixed(2)}</span>`
+      : `<span>Single${group.length > 1 ? 's' : ''}</span><span class="group-price">$${groupPrice.toFixed(2)}</span>`;
+    groupDiv.appendChild(header);
+
+    const itemsDiv = document.createElement('div');
+    itemsDiv.className = 'items';
+
+    group.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'item';
+      row.innerHTML = `
+        <img class="item-img" src="${item.preview}" alt="${item.shape}" />
+        <div class="item-info">
+          <div class="item-name">${item.shape.replace(/-/g,' ')}</div>
+          <div class="item-color">
+            <span class="color-dot" style="background:${item.color}"></span>
+            ${COLOR_NAMES[item.color] || item.color}
+          </div>
+        </div>
+        <span class="item-price">${isBundle ? '—' : '$' + SINGLE_PRICE.toFixed(2)}</span>
+        <button class="item-remove" data-id="${item.id}" title="Remove">✕</button>`;
+      itemsDiv.appendChild(row);
+    });
+
+    // Empty slots if incomplete bundle
+    if (!isBundle && group.length < 3) {
+      const needed = 3 - group.length;
+      for (let s = 0; s < needed; s++) {
+        const slot = document.createElement('div');
+        slot.className = 'slot';
+        slot.innerHTML = `<div class="slot-circle"></div><span class="slot-text">Add ${needed - s} more for $9.99 bundle</span>`;
+        itemsDiv.appendChild(slot);
+      }
+    }
+
+    groupDiv.appendChild(itemsDiv);
+    groupsEl.appendChild(groupDiv);
+  });
+
+  // Remove buttons
+  document.querySelectorAll('.item-remove').forEach(btn => {
+    btn.addEventListener('click', () => removeItem(Number(btn.dataset.id)));
+  });
+
+  // Shipping
+  const shippingFree = subtotal >= FREE_THRESHOLD;
+  const shippingCost = shippingFree ? 0 : SHIPPING;
+  const total = subtotal + shippingCost;
+  const pct = Math.min(100, (subtotal / FREE_THRESHOLD) * 100);
+
+  document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
+  document.getElementById('shipping-fill').style.width = pct + '%';
+
+  if (shippingFree) {
+    document.getElementById('shipping-label').textContent = 'Free shipping unlocked!';
+    document.getElementById('shipping-cost').textContent = '';
+    document.getElementById('shipping-line').innerHTML = '<span class="free">FREE</span>';
+  } else {
+    const left = (FREE_THRESHOLD - subtotal).toFixed(2);
+    document.getElementById('shipping-label').textContent = `$${left} away from free shipping`;
+    document.getElementById('shipping-cost').textContent = '';
+    document.getElementById('shipping-line').textContent = '$' + SHIPPING.toFixed(2);
+  }
+
+  document.getElementById('total').textContent = '$' + total.toFixed(2);
+}
+
+document.getElementById('checkout-btn').addEventListener('click', () => {
+  alert('Stripe checkout coming soon!');
+});
+
+renderCart();
+</script>
+</body>
+</html>

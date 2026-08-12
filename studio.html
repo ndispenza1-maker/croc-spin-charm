@@ -20,6 +20,9 @@
     }
     .logo { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--white); opacity: 0.6; }
     .logo:hover { opacity: 1; }
+    .cart-link { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; color: var(--white); opacity: 0.7; display: flex; align-items: center; gap: 0.4rem; }
+    .cart-link:hover { opacity: 1; }
+    .cart-badge { background: var(--accent); color: #fff; font-size: 0.7rem; font-weight: 900; border-radius: 99px; padding: 0.1rem 0.45rem; min-width: 18px; text-align: center; }
 
     .studio { display: grid; grid-template-columns: 1fr 360px; flex: 1; overflow: hidden; }
 
@@ -131,6 +134,9 @@
 
 <nav>
   <a class="logo" href="/">← Croc Spin Charm</a>
+  <a href="/cart.html" class="cart-link">
+    Cart <span class="cart-badge" id="cart-badge">0</span>
+  </a>
 </nav>
 
 <div class="studio">
@@ -339,8 +345,30 @@ document.getElementById('modal-submit').addEventListener('click', () => {
   document.getElementById('modal').classList.remove('open');
 });
 
+// ── CART ─────────────────────────────────────────────────────────
+function getCart() { return JSON.parse(localStorage.getItem('croc-cart') || '[]'); }
+function saveCart(c) { localStorage.setItem('croc-cart', JSON.stringify(c)); }
+
+function updateBadge() {
+  const n = getCart().length;
+  document.getElementById('cart-badge').textContent = n;
+}
+updateBadge();
+
 document.getElementById('buy-btn').addEventListener('click', () => {
-  alert('Checkout coming soon!');
+  if (!activeIcon) { alert('Pick a shape first!'); return; }
+  const preview = canvas.toDataURL('image/png');
+  const cart = getCart();
+  cart.push({ id: Date.now(), shape: activeIcon.name, color: activeColor, preview });
+  saveCart(cart);
+  updateBadge();
+  const btn = document.getElementById('buy-btn');
+  btn.textContent = '✓ Added — View Cart';
+  btn.style.background = '#222';
+  setTimeout(() => {
+    btn.textContent = 'Add to Cart';
+    btn.style.background = '';
+  }, 1800);
 });
 </script>
 </body>
