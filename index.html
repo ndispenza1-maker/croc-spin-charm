@@ -10,12 +10,12 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --black: #080808;
-      --white: #f0f0f0;
-      --accent: #c8a96e;
-      --dim: #2a2a2a;
-      --mid: #555;
-      --soft: #999;
+      --black: #0a0e2e;
+      --white: #fff0f8;
+      --accent: #ff6eb4;
+      --dim: #1a2a6c;
+      --mid: #7ab3d4;
+      --soft: #ffb3d9;
       --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
@@ -62,6 +62,7 @@
 
     /* HERO */
     .hero {
+      background: radial-gradient(ellipse at 50% 60%, #1a1060 0%, #0a0e2e 70%);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -228,14 +229,14 @@
       position: relative;
     }
     .pricing-card.featured {
-      background: #0d0d0d;
+      background: #0c1235;
     }
     .pricing-card.featured::before {
       content: 'STARTER';
       position: absolute;
       top: -1px; left: 2rem;
       background: var(--accent);
-      color: #000;
+      color: #0a0e2e;
       font-size: 0.58rem;
       font-weight: 700;
       letter-spacing: 0.18em;
@@ -314,7 +315,7 @@
     }
     .btn-card.accent {
       background: var(--accent);
-      color: #000;
+      color: #0a0e2e;
       border-color: var(--accent);
       font-weight: 900;
     }
@@ -483,8 +484,8 @@
         ctx.lineCap = 'round';
         // Soft gold gradient
         const grad = ctx.createLinearGradient(0, -8, R * 0.62, -R * 0.78);
-        grad.addColorStop(0, 'rgba(200,169,110,0.9)');
-        grad.addColorStop(1, 'rgba(200,169,110,0.15)');
+        grad.addColorStop(0, 'rgba(255,110,180,0.9)');
+        grad.addColorStop(1, 'rgba(255,140,80,0.15)');
         ctx.strokeStyle = grad;
         ctx.stroke();
         ctx.restore();
@@ -493,14 +494,14 @@
       // Outer ring
       ctx.beginPath();
       ctx.arc(0, 0, R, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(200,169,110,0.12)';
+      ctx.strokeStyle = 'rgba(255,110,180,0.15)';
       ctx.lineWidth = 1;
       ctx.stroke();
 
       // Center hub
       ctx.beginPath();
       ctx.arc(0, 0, 6, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(200,169,110,0.35)';
+      ctx.fillStyle = 'rgba(255,110,180,0.4)';
       ctx.fill();
 
       ctx.restore();
