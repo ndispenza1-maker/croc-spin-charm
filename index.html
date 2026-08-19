@@ -4,20 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Spinnlitz</title>
-  <meta name="description" content="Design your own spinning shoe charm. Pick your shape, pick your color, wear it your way." />
-
-  <!-- Vercel Analytics -->
+  <meta name="description" content="Spinning shoe charms. Design your own. Ships to your door." />
   <script defer src="/_vercel/insights/script.js"></script>
-
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --black: #0a0a0a;
-      --white: #f5f5f5;
-      --accent: #ff4d00;
-      --grey: #1a1a1a;
-      --mid: #888;
+      --black: #080808;
+      --white: #f0f0f0;
+      --accent: #c8a96e;
+      --dim: #2a2a2a;
+      --mid: #555;
+      --soft: #999;
       --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
@@ -27,200 +25,334 @@
       background: var(--black);
       color: var(--white);
       font-family: var(--font);
-      line-height: 1.5;
+      line-height: 1.6;
+      overflow-x: hidden;
     }
 
+    /* NAV */
     nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.2rem 2rem;
-      border-bottom: 1px solid #222;
-      position: sticky;
-      top: 0;
-      background: var(--black);
-      z-index: 10;
+      padding: 1.6rem 3rem;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      mix-blend-mode: normal;
     }
-    .logo { font-size: 1rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
-    .nav-cta {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      padding: 0.5rem 1.2rem;
-      font-size: 0.85rem;
+    .logo {
+      font-size: 0.8rem;
       font-weight: 700;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      cursor: pointer;
-      text-decoration: none;
-      border-radius: 2px;
+      color: var(--white);
+      opacity: 0.5;
     }
-    .nav-cta:hover { opacity: 0.85; }
+    .nav-cta {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 1; }
 
     /* HERO */
     .hero {
-      min-height: 88vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       text-align: center;
-      padding: 4rem 2rem;
+      padding: 8rem 2rem 4rem;
+      position: relative;
     }
 
-    .disc-wrap {
-      position: relative;
-      width: 180px;
-      height: 180px;
-      margin-bottom: 2.5rem;
+    /* SPINNER CANVAS */
+    #hero-canvas {
+      display: block;
+      margin-bottom: 3.5rem;
     }
-    .disc {
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      background: conic-gradient(from 0deg, #ff4d00, #ff8c00, #ffd700, #ff4d00, #ff8c00, #ff4d00);
-      animation: spin 3s linear infinite;
-      box-shadow: 0 0 40px rgba(255,77,0,0.4);
+
+    .hero-eyebrow {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+      opacity: 0.8;
     }
-    .disc-hub {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      background: var(--black);
-      border: 2px solid #333;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
 
     .hero h1 {
-      font-size: clamp(2.4rem, 6vw, 4.5rem);
-      font-weight: 900;
-      letter-spacing: -0.02em;
-      line-height: 1.05;
-      margin-bottom: 1rem;
+      font-size: clamp(2.6rem, 6vw, 5rem);
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      margin-bottom: 1.4rem;
+      color: var(--white);
     }
-    .hero h1 span { color: var(--accent); }
+    .hero h1 em {
+      font-style: normal;
+      font-weight: 700;
+    }
 
     .hero p {
-      font-size: clamp(1rem, 2.5vw, 1.2rem);
-      color: var(--mid);
-      max-width: 480px;
-      margin-bottom: 2.5rem;
+      font-size: clamp(0.9rem, 2vw, 1.05rem);
+      color: var(--soft);
+      max-width: 380px;
+      margin: 0 auto 3rem;
+      line-height: 1.7;
     }
 
     .btn-primary {
-      background: var(--accent);
-      color: #fff;
-      padding: 0.9rem 2.2rem;
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      border: none;
-      border-radius: 2px;
-      cursor: pointer;
-      text-decoration: none;
       display: inline-block;
-    }
-    .btn-primary:hover { opacity: 0.85; }
-
-    /* SECTION */
-    .section {
-      padding: 5rem 2rem;
-      max-width: 960px;
-      margin: 0 auto;
-    }
-    .section-label {
-      font-size: 0.75rem;
+      background: transparent;
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 0.85rem 2.4rem;
+      font-size: 0.78rem;
       font-weight: 700;
       letter-spacing: 0.18em;
       text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 1px;
+      transition: border-color 0.25s, color 0.25s;
+    }
+    .btn-primary:hover {
+      border-color: var(--accent);
       color: var(--accent);
-      margin-bottom: 0.75rem;
     }
+
+    /* SCROLL HINT */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.25;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: var(--white);
+      animation: scrollDown 2s ease-in-out infinite;
+    }
+    @keyframes scrollDown {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      51% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* DIVIDER */
+    .divider {
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--dim), transparent);
+      margin: 0 auto;
+    }
+
+    /* SECTIONS */
+    .section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      opacity: 0.7;
+    }
+
     .section h2 {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 900;
-      margin-bottom: 3rem;
-      letter-spacing: -0.02em;
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      margin-bottom: 3.5rem;
+      color: var(--white);
     }
+    .section h2 strong { font-weight: 700; }
 
     /* STEPS */
     .steps {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 2rem;
-    }
-    .step {
-      background: var(--grey);
-      border-radius: 4px;
-      padding: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 3rem;
     }
     .step-num {
-      font-size: 2.5rem;
-      font-weight: 900;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
       color: var(--accent);
-      line-height: 1;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      opacity: 0.6;
     }
-    .step h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
-    .step p { font-size: 0.9rem; color: var(--mid); }
-
-    /* PRICING */
-    .pricing-card {
-      background: var(--grey);
-      border: 1px solid #333;
-      border-radius: 6px;
-      padding: 3rem;
-      max-width: 420px;
-      margin: 0 auto;
-      text-align: center;
-    }
-    .price {
-      font-size: 4rem;
-      font-weight: 900;
-      line-height: 1;
-      margin-bottom: 0.25rem;
-    }
-    .price sup { font-size: 1.5rem; vertical-align: top; margin-top: 0.5rem; }
-    .price-period { color: var(--mid); font-size: 0.9rem; margin-bottom: 2rem; }
-    .perks { list-style: none; margin-bottom: 2rem; text-align: left; display: flex; flex-direction: column; gap: 0.75rem; }
-    .perks li { font-size: 0.95rem; display: flex; align-items: flex-start; gap: 0.6rem; }
-    .perks li::before { content: '→'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
-    .btn-full {
-      display: block;
-      width: 100%;
-      background: var(--accent);
-      color: #fff;
-      padding: 1rem;
+    .step h3 {
       font-size: 1rem;
       font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      border: none;
-      border-radius: 2px;
-      cursor: pointer;
-      text-decoration: none;
+      margin-bottom: 0.5rem;
+      color: var(--white);
     }
-    .btn-full:hover { opacity: 0.85; }
+    .step p {
+      font-size: 0.88rem;
+      color: var(--soft);
+      line-height: 1.7;
+    }
+
+    /* PRICING */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1px;
+      background: var(--dim);
+      border: 1px solid var(--dim);
+    }
+
+    .pricing-card {
+      background: var(--black);
+      padding: 2.5rem 2rem;
+      position: relative;
+    }
+    .pricing-card.featured {
+      background: #0d0d0d;
+    }
+    .pricing-card.featured::before {
+      content: 'STARTER';
+      position: absolute;
+      top: -1px; left: 2rem;
+      background: var(--accent);
+      color: #000;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      padding: 0.2rem 0.6rem;
+    }
+
+    .card-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin-bottom: 1.2rem;
+    }
+
+    .price {
+      font-size: 2.8rem;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--white);
+      margin-bottom: 0.3rem;
+    }
+    .price sup {
+      font-size: 1.1rem;
+      font-weight: 400;
+      vertical-align: super;
+      margin-right: 0.1rem;
+    }
+    .price-note {
+      font-size: 0.78rem;
+      color: var(--mid);
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    .perks {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      margin-bottom: 2rem;
+    }
+    .perks li {
+      font-size: 0.85rem;
+      color: var(--soft);
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+    .perks li::before {
+      content: '–';
+      color: var(--accent);
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+
+    .btn-card {
+      display: block;
+      width: 100%;
+      background: transparent;
+      color: var(--white);
+      border: 1px solid var(--dim);
+      padding: 0.8rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-decoration: none;
+      text-align: center;
+      transition: border-color 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    .btn-card:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .btn-card.accent {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      font-weight: 900;
+    }
+    .btn-card.accent:hover {
+      opacity: 0.88;
+      color: #000;
+    }
+
+    .pricing-note {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: var(--mid);
+    }
 
     /* FOOTER */
     footer {
-      padding: 2rem;
-      border-top: 1px solid #222;
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--dim);
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
-      font-size: 0.8rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    footer span {
+      font-size: 0.72rem;
       color: var(--mid);
+      letter-spacing: 0.08em;
     }
 
-    @media (max-width: 480px) {
-      nav { padding: 1rem; }
-      .pricing-card { padding: 2rem 1.5rem; }
+    @media (max-width: 520px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .section { padding: 4rem 1.5rem; }
+      .steps { gap: 2rem; }
+      footer { padding: 2rem 1.5rem; }
     }
   </style>
 </head>
@@ -228,78 +360,163 @@
 
   <nav>
     <div class="logo">Spinnlitz</div>
-    <a class="nav-cta" href="/studio.html">Start Designing</a>
+    <a class="nav-cta" href="/studio.html">Design yours</a>
   </nav>
 
   <!-- HERO -->
   <section class="hero">
-    <div class="disc-wrap">
-      <div class="disc"></div>
-      <div class="disc-hub"></div>
+    <canvas id="hero-canvas" width="200" height="200"></canvas>
+    <div class="hero-eyebrow">Spinning shoe charms</div>
+    <h1>Wear something<br><em>that moves.</em></h1>
+    <p>Custom spinning charms for your shoes. Pick a shape, pick a color — we print it and ship it.</p>
+    <a class="btn-primary" href="/studio.html">Start designing</a>
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
     </div>
-    <h1>Your shoe.<br><span>Your design.</span></h1>
-    <p>A spinning charm that presses into any standard shoe hole. Design the face yourself — your logo, your text, your shape.</p>
-    <a class="btn-primary" href="/studio.html">Start Designing</a>
   </section>
+
+  <div class="divider"></div>
 
   <!-- HOW IT WORKS -->
   <section class="section">
     <div class="section-label">How it works</div>
-    <h2>Design it. Wear it.</h2>
+    <h2>Three steps.<br><strong>That's it.</strong></h2>
     <div class="steps">
       <div class="step">
         <div class="step-num">01</div>
-        <h3>Subscribe</h3>
-        <p>Unlock the disc designer. Build as many custom spinner faces as you want.</p>
+        <h3>Design</h3>
+        <p>Open the studio. Pick your shape from thousands of icons or request something custom. Choose your color.</p>
       </div>
       <div class="step">
         <div class="step-num">02</div>
-        <h3>Design your disc</h3>
-        <p>Add your text, logo, or shape. See it live on the spinner before you commit.</p>
+        <h3>Order</h3>
+        <p>We 3D print your disc to order. No mass production. Each one made for you.</p>
       </div>
       <div class="step">
         <div class="step-num">03</div>
-        <h3>Press it in</h3>
-        <p>Your charm arrives ready to press into any standard shoe hole. Spins freely. Looks custom.</p>
+        <h3>Press in</h3>
+        <p>Drop it into any standard shoe hole. It spins freely. Stays put. Looks sharp.</p>
       </div>
     </div>
   </section>
 
+  <div class="divider"></div>
+
   <!-- PRICING -->
-  <section class="section" id="pricing" style="padding-top:0">
+  <section class="section" id="pricing">
     <div class="section-label">Pricing</div>
-    <h2>Simple pricing. No subscriptions.</h2>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;">
-      <div class="pricing-card">
-        <div class="price"><sup>$</sup>4.99</div>
-        <div class="price-period">per charm</div>
-        <ul class="perks">
-          <li>Design it yourself in the studio</li>
-          <li>Pick your color</li>
-          <li>Add text or choose a preset design</li>
-          <li>We print it and ship it</li>
-        </ul>
-        <a class="btn-full" href="/studio.html">Start Designing</a>
-      </div>
-      <div class="pricing-card" style="border-color:var(--accent)">
-        <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;">Best Value</div>
+    <h2>Simple.<br><strong>No surprises.</strong></h2>
+
+    <div class="pricing-grid">
+
+      <div class="pricing-card featured">
+        <div class="card-label">Starter Pack</div>
         <div class="price"><sup>$</sup>9.99</div>
-        <div class="price-period">bundle of 3</div>
+        <div class="price-note">2 bases + 2 spinner discs<br>Everything you need to start.</div>
         <ul class="perks">
-          <li>Mix and match any 3 designs</li>
-          <li>Pick a different color for each</li>
-          <li>Add text to any or all</li>
-          <li>Free shipping over $25</li>
+          <li>2 housing bases</li>
+          <li>2 custom spinner discs</li>
+          <li>Design each disc yourself</li>
+          <li>Mix colors and shapes</li>
         </ul>
-        <a class="btn-full" href="/studio.html">Build a Bundle</a>
+        <a class="btn-card accent" href="/studio.html">Get Started</a>
       </div>
+
+      <div class="pricing-card">
+        <div class="card-label">Bases</div>
+        <div class="price"><sup>$</sup>3.99</div>
+        <div class="price-note">per base<br>Add more shoes to the rotation.</div>
+        <ul class="perks">
+          <li>Housing base only</li>
+          <li>Fits any standard shoe hole</li>
+          <li>Pair with any disc</li>
+        </ul>
+        <a class="btn-card" href="/studio.html">Add a Base</a>
+      </div>
+
+      <div class="pricing-card">
+        <div class="card-label">Spinner Discs</div>
+        <div class="price"><sup>$</sup>1.99</div>
+        <div class="price-note">each &nbsp;·&nbsp; or 5 for $9.99<br>Swap your look anytime.</div>
+        <ul class="perks">
+          <li>One custom disc</li>
+          <li>Your shape, your color</li>
+          <li>Snaps onto any base</li>
+          <li>5-pack saves 40%</li>
+        </ul>
+        <a class="btn-card" href="/studio.html">Design a Disc</a>
+      </div>
+
     </div>
-    <div style="text-align:center;margin-top:1.25rem;font-size:0.8rem;color:var(--mid);">+ shipping on all orders · Free over $25</div>
+
+    <div class="pricing-note">+ shipping on all orders &nbsp;·&nbsp; Free over $25</div>
   </section>
 
   <footer>
-    <span>Spinnlitz — LFH Holdings</span>
+    <span>Spinnlitz</span>
+    <span>LFH Holdings</span>
   </footer>
+
+  <script>
+    // ── HERO SPINNER ─────────────────────────────────────────────
+    const canvas = document.getElementById('hero-canvas');
+    const ctx = canvas.getContext('2d');
+    const W = 200, H = 200, CX = 100, CY = 100, R = 72;
+    let angle = 0;
+
+    // Ray design — 8 curved spokes
+    function drawDisc(a) {
+      ctx.clearRect(0, 0, W, H);
+      ctx.save();
+      ctx.translate(CX, CY);
+      ctx.rotate(a);
+
+      const spokes = 8;
+      for (let i = 0; i < spokes; i++) {
+        ctx.save();
+        ctx.rotate((Math.PI * 2 / spokes) * i);
+        ctx.beginPath();
+        // Curved spoke using quadratic bezier
+        ctx.moveTo(0, -8);
+        ctx.quadraticCurveTo(R * 0.55, -R * 0.45, R * 0.62, -R * 0.78);
+        ctx.lineWidth = 5;
+        ctx.lineCap = 'round';
+        // Soft gold gradient
+        const grad = ctx.createLinearGradient(0, -8, R * 0.62, -R * 0.78);
+        grad.addColorStop(0, 'rgba(200,169,110,0.9)');
+        grad.addColorStop(1, 'rgba(200,169,110,0.15)');
+        ctx.strokeStyle = grad;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Outer ring
+      ctx.beginPath();
+      ctx.arc(0, 0, R, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(200,169,110,0.12)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Center hub
+      ctx.beginPath();
+      ctx.arc(0, 0, 6, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(200,169,110,0.35)';
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    let lastTs = 0;
+    function loop(ts) {
+      const dt = ts - lastTs;
+      lastTs = ts;
+      // Very slow — ~12 seconds per revolution
+      angle += (Math.PI * 2 / 12000) * dt;
+      drawDisc(angle);
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  </script>
 
 </body>
 </html>
