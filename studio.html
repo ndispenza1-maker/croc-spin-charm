@@ -126,6 +126,26 @@
     .btn-submit { flex: 2; background: transparent; color: var(--accent); border: 1px solid rgba(200,169,110,0.4); padding: 0.7rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 1px; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
     .btn-submit:hover { border-color: var(--accent); background: rgba(200,169,110,0.08); }
 
+    /* AI GENERATE */
+    .gen-input {
+      width: 100%; background: var(--grey); border: 1px solid var(--border);
+      border-radius: 2px; color: var(--white); font-family: var(--font);
+      font-size: 0.88rem; padding: 0.65rem 0.85rem; outline: none;
+      transition: border-color 0.15s;
+    }
+    .gen-input:focus { border-color: var(--accent); }
+    .gen-input::placeholder { color: #333; }
+    .gen-status {
+      font-size: 0.7rem; color: var(--mid); margin-top: 0.5rem;
+      min-height: 1rem; letter-spacing: 0.06em; text-align: center;
+    }
+    .gen-status.error { color: #ff6b6b; }
+    .gen-status.ok { color: var(--accent); }
+    .spin-icon {
+      display: inline-block; animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     @media (max-width: 680px) {
       body { overflow: auto; height: auto; }
       .studio { grid-template-columns: 1fr; height: auto; }
@@ -168,7 +188,7 @@
         </select>
       </div>
       <div style="padding:0.6rem 0 0;">
-        <button class="btn-custom" id="request-btn" style="font-size:0.72rem;padding:0.45rem 0.9rem;">Don't see yours? Request Custom — $9.99</button>
+        <button class="btn-custom" id="request-btn" style="font-size:0.72rem;padding:0.45rem 0.9rem;">✦ Generate a Shape with AI — $9.99</button>
       </div>
     </div>
 
@@ -193,15 +213,17 @@
   </div>
 </div>
 
-<!-- CUSTOM REQUEST MODAL -->
+<!-- AI GENERATE MODAL -->
 <div class="modal-bg" id="modal">
   <div class="modal">
-    <h2>Custom Shape — $9.99</h2>
-    <p>Describe your shape or idea. We'll design it and reach out to confirm before charging.</p>
-    <textarea id="custom-desc" placeholder="e.g. My dog's silhouette, a guitar, the letter Q in bubble font..."></textarea>
-    <div class="modal-btns">
+    <h2>Generate a Shape — $9.99</h2>
+    <p>Describe what you want. AI generates it, we print it.</p>
+    <input class="gen-input" id="gen-prompt" type="text"
+      placeholder="e.g. german shepherd silhouette, lightning bolt, crescent moon..." />
+    <div class="gen-status" id="gen-status"></div>
+    <div class="modal-btns" style="margin-top:0.85rem">
       <button class="btn-cancel" id="modal-cancel">Cancel</button>
-      <button class="btn-submit" id="modal-submit">Submit Request</button>
+      <button class="btn-submit" id="modal-generate">Generate</button>
     </div>
   </div>
 </div>
@@ -243,7 +265,23 @@ function render() {
   ctx.save();
   ctx.translate(C, C);
   ctx.rotate(angle);
-  if (activeIcon) {
+
+  if (generatedSilhouette) {
+    const { mask, size } = generatedSilhouette;
+    const steps = 360;
+    for (let s = 0; s < steps; s++) {
+      const a = (s / steps) * Math.PI * 2;
+      for (let ri = 1; ri < 64; ri++) {
+        const frac = ri / 64;
+        const r = frac * R;
+        const nx = Math.round((0.5 + Math.cos(a) * frac * 0.5) * (size - 1));
+        const ny = Math.round((0.5 + Math.sin(a) * frac * 0.5) * (size - 1));
+        if (!mask[ny * size + nx]) continue;
+        ctx.fillStyle = activeColor;
+        ctx.fillRect(Math.cos(a)*r - 1, Math.sin(a)*r - 1, 2, 2);
+      }
+    }
+  } else if (activeIcon) {
     const scale = (R * 2) / 16;
     ctx.save();
     ctx.scale(scale, scale);
@@ -258,6 +296,7 @@ function render() {
     ctx.lineWidth = 2;
     ctx.stroke();
   }
+
   ctx.restore();
   angle += 0.016;
   requestAnimationFrame(render);
@@ -273,7 +312,9 @@ function svgEl(paths, size) {
 function selectIcon(name) {
   if (!icons[name]) return;
   activeIcon = { name, paths: icons[name].paths };
+  generatedSilhouette = null;
   document.getElementById('selected-name').textContent = name.replace(/-/g,' ');
+  document.getElementById('buy-label').textContent = 'Custom spinner charm';
   document.getElementById('buy-price').textContent = '$4.99';
   document.querySelectorAll('.shape-tile').forEach(t => {
     t.classList.toggle('active', t.dataset.name === name);
@@ -338,18 +379,91 @@ COLORS.forEach((c, i) => {
 });
 
 // ── CUSTOM MODAL ─────────────────────────────────────────────────
+// ── AI GENERATE ────────────────────────────────────────────
+let generatedSilhouette = null; // { mask, size, prompt }
+
 document.getElementById('request-btn').addEventListener('click', () => {
+  document.getElementById('gen-prompt').value = '';
+  document.getElementById('gen-status').textContent = '';
+  document.getElementById('gen-status').className = 'gen-status';
   document.getElementById('modal').classList.add('open');
 });
 document.getElementById('modal-cancel').addEventListener('click', () => {
   document.getElementById('modal').classList.remove('open');
 });
-document.getElementById('modal-submit').addEventListener('click', () => {
-  const desc = document.getElementById('custom-desc').value.trim();
-  if (!desc) return;
-  alert("Custom request received! We'll be in touch to confirm before charging.");
-  document.getElementById('modal').classList.remove('open');
+document.getElementById('gen-prompt').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('modal-generate').click();
 });
+
+document.getElementById('modal-generate').addEventListener('click', async () => {
+  const prompt = document.getElementById('gen-prompt').value.trim();
+  if (!prompt) return;
+
+  const status = document.getElementById('gen-status');
+  const btn    = document.getElementById('modal-generate');
+  status.className = 'gen-status';
+  status.innerHTML = '<span class="spin-icon">○</span> Generating… (may take ~10s)';
+  btn.disabled = true;
+
+  // Build a silhouette-friendly prompt
+  const aiPrompt = encodeURIComponent(
+    `${prompt}, black silhouette on pure white background, flat vector, no shading, no text, centered`
+  );
+  const url = `https://image.pollinations.ai/prompt/${aiPrompt}?width=512&height=512&nologo=true&seed=${Date.now()}`;
+
+  try {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = url;
+    });
+
+    // Draw to offscreen canvas and extract silhouette
+    const SIZE = 256;
+    const off  = document.createElement('canvas');
+    off.width  = off.height = SIZE;
+    const octx = off.getContext('2d');
+    octx.drawImage(img, 0, 0, SIZE, SIZE);
+    const imgData = octx.getImageData(0, 0, SIZE, SIZE);
+
+    // Luminance threshold — dark pixels on white = shape
+    const mask = new Uint8Array(SIZE * SIZE);
+    let hits = 0;
+    for (let i = 0; i < SIZE * SIZE; i++) {
+      const r = imgData.data[i*4], g = imgData.data[i*4+1], b = imgData.data[i*4+2];
+      const lum = (r*299 + g*587 + b*114) / 1000;
+      if (lum < 180) { mask[i] = 1; hits++; }
+    }
+
+    if (hits < 200) throw new Error('Image too light — try a different prompt');
+
+    generatedSilhouette = { mask, size: SIZE, prompt };
+
+    // Switch the disc preview to silhouette mode
+    activeIcon = null;
+    document.querySelectorAll('.shape-tile').forEach(t => t.classList.remove('active'));
+    document.getElementById('shape-select').value = '';
+    document.getElementById('selected-name').textContent = prompt;
+    document.getElementById('buy-label').textContent = 'AI custom shape';
+    document.getElementById('buy-price').textContent = '$9.99';
+
+    status.className = 'gen-status ok';
+    status.textContent = '✓ Looking good! Close to use it.';
+    btn.disabled = false;
+
+    // Auto-close after 1.5s
+    setTimeout(() => document.getElementById('modal').classList.remove('open'), 1500);
+
+  } catch (err) {
+    status.className = 'gen-status error';
+    status.textContent = 'Generation failed — try rephrasing your prompt.';
+    btn.disabled = false;
+  }
+});
+
+// ── RENDER: silhouette support ────────────────────────────────
 
 // ── CART ─────────────────────────────────────────────────────────
 function getCart() { return JSON.parse(localStorage.getItem('spinnlitz-cart') || '[]'); }
@@ -362,10 +476,14 @@ function updateBadge() {
 updateBadge();
 
 document.getElementById('buy-btn').addEventListener('click', () => {
-  if (!activeIcon) { alert('Pick a shape first!'); return; }
+  if (!activeIcon && !generatedSilhouette) { alert('Pick a shape or generate one first!'); return; }
   const preview = canvas.toDataURL('image/png');
   const cart = getCart();
-  cart.push({ id: Date.now(), shape: activeIcon.name, color: activeColor, preview });
+  if (generatedSilhouette) {
+    cart.push({ id: Date.now(), type: 'custom', shape: generatedSilhouette.prompt, color: activeColor, preview });
+  } else {
+    cart.push({ id: Date.now(), type: 'disc', shape: activeIcon.name, color: activeColor, preview });
+  }
   saveCart(cart);
   updateBadge();
   const btn = document.getElementById('buy-btn');
