@@ -247,6 +247,7 @@ const COLORS = [
 
 let icons = {};
 let activeIcon = null;
+let generatedSilhouette = null;
 let activeColor = COLORS[0].hex;
 let angle = 0;
 
@@ -379,8 +380,7 @@ COLORS.forEach((c, i) => {
 });
 
 // ── CUSTOM MODAL ─────────────────────────────────────────────────
-// ── AI GENERATE ────────────────────────────────────────────
-let generatedSilhouette = null; // { mask, size, prompt }
+// ── AI GENERATE ─────────────────────────────────────────────────
 
 document.getElementById('request-btn').addEventListener('click', () => {
   document.getElementById('gen-prompt').value = '';
