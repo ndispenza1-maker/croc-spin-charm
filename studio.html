@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Design Your Charm — Croc Spin Charm</title>
+  <title>Design Your Charm — Spinnlitz</title>
   <script defer src="/_vercel/insights/script.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -133,7 +133,7 @@
 <body>
 
 <nav>
-  <a class="logo" href="/">← Croc Spin Charm</a>
+  <a class="logo" href="/">← Spinnlitz</a>
   <a href="/cart.html" class="cart-link">
     Cart <span class="cart-badge" id="cart-badge">0</span>
   </a>
@@ -346,8 +346,8 @@ document.getElementById('modal-submit').addEventListener('click', () => {
 });
 
 // ── CART ─────────────────────────────────────────────────────────
-function getCart() { return JSON.parse(localStorage.getItem('croc-cart') || '[]'); }
-function saveCart(c) { localStorage.setItem('croc-cart', JSON.stringify(c)); }
+function getCart() { return JSON.parse(localStorage.getItem('spinnlitz-cart') || '[]'); }
+function saveCart(c) { localStorage.setItem('spinnlitz-cart', JSON.stringify(c)); }
 
 function updateBadge() {
   const n = getCart().length;

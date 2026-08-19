@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cart — Croc Spin Charm</title>
+  <title>Cart — Spinnlitz</title>
   <script defer src="/_vercel/insights/script.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -102,7 +102,7 @@
 <body>
 
 <nav>
-  <a class="logo" href="/">← Croc Spin Charm</a>
+  <a class="logo" href="/">← Spinnlitz</a>
   <a class="add-more" href="/studio.html">+ Add More</a>
 </nav>
 
@@ -149,8 +149,8 @@ const COLOR_NAMES = {
   '#ff1a4b':'Red','#111111':'Black'
 };
 
-function getCart() { return JSON.parse(localStorage.getItem('croc-cart') || '[]'); }
-function saveCart(c) { localStorage.setItem('croc-cart', JSON.stringify(c)); }
+function getCart() { return JSON.parse(localStorage.getItem('spinnlitz-cart') || '[]'); }
+function saveCart(c) { localStorage.setItem('spinnlitz-cart', JSON.stringify(c)); }
 
 function removeItem(id) {
   saveCart(getCart().filter(i => i.id !== id));
