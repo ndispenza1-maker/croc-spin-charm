@@ -181,11 +181,12 @@
     <!-- BUY -->
     <div class="buy">
       <div class="buy-row">
-        <span class="buy-label" id="buy-label">Custom spinner charm</span>
-        <span class="buy-price" id="buy-price">$4.99</span>
+        <span class="buy-label">Spinner disc</span>
+        <span class="buy-price">$1.99</span>
       </div>
-      <button class="btn-buy" id="buy-btn">Add to Cart</button>
-      <div class="shipping">+ shipping &nbsp;·&nbsp; Free over $25</div>
+      <button class="btn-buy" id="buy-btn">Add Disc to Cart</button>
+      <div class="shipping" style="margin-bottom:0.6rem">5 discs auto-bundle at $9.99 &nbsp;·&nbsp; Free shipping over $25</div>
+      <button class="btn-buy" id="buy-base-btn" style="opacity:0.6;margin-top:0.4rem">+ Add a Base — $3.99</button>
     </div>
 
   </div>
@@ -363,16 +364,22 @@ document.getElementById('buy-btn').addEventListener('click', () => {
   if (!activeIcon) { alert('Pick a shape first!'); return; }
   const preview = canvas.toDataURL('image/png');
   const cart = getCart();
-  cart.push({ id: Date.now(), shape: activeIcon.name, color: activeColor, preview });
+  cart.push({ id: Date.now(), type: 'disc', shape: activeIcon.name, color: activeColor, preview });
   saveCart(cart);
   updateBadge();
   const btn = document.getElementById('buy-btn');
-  btn.textContent = '✓ Added — View Cart';
-  btn.style.background = '#222';
-  setTimeout(() => {
-    btn.textContent = 'Add to Cart';
-    btn.style.background = '';
-  }, 1800);
+  btn.textContent = '✓ Added';
+  setTimeout(() => { btn.textContent = 'Add Disc to Cart'; }, 1800);
+});
+
+document.getElementById('buy-base-btn').addEventListener('click', () => {
+  const cart = getCart();
+  cart.push({ id: Date.now(), type: 'base' });
+  saveCart(cart);
+  updateBadge();
+  const btn = document.getElementById('buy-base-btn');
+  btn.textContent = '✓ Base Added';
+  setTimeout(() => { btn.textContent = '+ Add a Base — $3.99'; }, 1800);
 });
 </script>
 </body>
