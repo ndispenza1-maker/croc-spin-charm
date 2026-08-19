@@ -8,8 +8,8 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --black: #0a0a0a; --white: #f5f5f5; --accent: #ff4d00;
-      --grey: #1a1a1a; --border: #222; --mid: #666;
+      --black: #080808; --white: #f0f0f0; --accent: #c8a96e;
+      --grey: #111; --border: #1e1e1e; --mid: #555;
       --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     body { background: var(--black); color: var(--white); font-family: var(--font); min-height: 100vh; }
@@ -19,84 +19,88 @@
       padding: 0 2rem; height: 56px; border-bottom: 1px solid var(--border);
       position: sticky; top: 0; background: var(--black); z-index: 10;
     }
-    .logo { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--white); opacity: 0.6; }
+    .logo { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; text-decoration: none; color: var(--white); opacity: 0.5; }
     .logo:hover { opacity: 1; }
-    .add-more { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; color: var(--accent); }
+    .add-more { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; color: var(--accent); opacity: 0.8; transition: opacity 0.2s; }
+    .add-more:hover { opacity: 1; }
 
     .page { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem; }
-    h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 0.3rem; }
-    .sub { font-size: 0.85rem; color: var(--mid); margin-bottom: 2rem; }
+    h1 { font-size: 1.6rem; font-weight: 300; letter-spacing: -0.01em; margin-bottom: 0.3rem; }
+    .sub { font-size: 0.78rem; color: var(--mid); margin-bottom: 2rem; letter-spacing: 0.04em; }
 
     /* BUNDLE GROUP */
     .group { margin-bottom: 2rem; }
     .group-header {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 0.6rem 1rem; border-radius: 3px 3px 0 0;
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.6rem 1rem; border-radius: 0;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
     }
-    .group-header.bundle { background: var(--accent); color: #fff; }
-    .group-header.single { background: #1e1e1e; color: var(--mid); border: 1px solid var(--border); border-bottom: none; }
-    .group-price { font-size: 1rem; font-weight: 900; }
+    .group-header.bundle { background: var(--accent); color: #000; }
+    .group-header.single { background: #0d0d0d; color: var(--mid); border: 1px solid var(--border); border-bottom: none; }
+    .group-price { font-size: 0.95rem; font-weight: 700; }
 
-    .items { border: 1px solid var(--border); border-radius: 0 0 3px 3px; overflow: hidden; }
+    .items { border: 1px solid var(--border); overflow: hidden; }
     .item {
       display: flex; align-items: center; gap: 1.25rem;
       padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
       background: var(--grey);
     }
     .item:last-child { border-bottom: none; }
-    .item-img { width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0; background: #111; }
+    .item-img { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: #0a0a0a; }
     .item-info { flex: 1; }
-    .item-name { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.2rem; text-transform: capitalize; }
-    .item-color { font-size: 0.75rem; color: var(--mid); display: flex; align-items: center; gap: 0.4rem; }
-    .color-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .item-price { font-size: 0.9rem; font-weight: 700; color: var(--mid); }
-    .item-remove { background: none; border: none; color: #444; font-size: 1.1rem; cursor: pointer; padding: 0.25rem; line-height: 1; }
+    .item-name { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.2rem; text-transform: capitalize; letter-spacing: 0.02em; }
+    .item-color { font-size: 0.72rem; color: var(--mid); display: flex; align-items: center; gap: 0.4rem; }
+    .color-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .item-price { font-size: 0.85rem; font-weight: 300; color: var(--mid); }
+    .item-remove { background: none; border: none; color: #333; font-size: 1rem; cursor: pointer; padding: 0.25rem; line-height: 1; transition: color 0.15s; }
     .item-remove:hover { color: var(--accent); }
 
     /* BUNDLE SLOT (empty) */
     .slot {
       display: flex; align-items: center; gap: 1.25rem;
       padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
-      background: #111; opacity: 0.5;
+      background: #090909; opacity: 0.5;
     }
     .slot:last-child { border-bottom: none; }
-    .slot-circle { width: 56px; height: 56px; border-radius: 50%; border: 2px dashed #333; flex-shrink: 0; }
-    .slot-text { font-size: 0.82rem; color: var(--mid); }
+    .slot-circle { width: 52px; height: 52px; border-radius: 50%; border: 1px dashed #2a2a2a; flex-shrink: 0; }
+    .slot-text { font-size: 0.78rem; color: var(--mid); letter-spacing: 0.04em; }
 
     /* SUMMARY */
     .summary {
       background: var(--grey); border: 1px solid var(--border);
-      border-radius: 4px; padding: 1.5rem; margin-top: 1rem;
+      padding: 1.5rem; margin-top: 1rem;
     }
-    .summary-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.6rem; }
-    .summary-row.total { font-size: 1.1rem; font-weight: 900; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); margin-bottom: 0; }
+    .summary-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.6rem; }
+    .summary-row.total { font-size: 1rem; font-weight: 700; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); margin-bottom: 0; }
     .summary-row .label { color: var(--mid); }
-    .free { color: #00cc44; font-weight: 700; }
+    .free { color: #6dbf8a; font-weight: 700; }
     .shipping-bar { margin: 0.75rem 0 1.25rem; }
-    .shipping-bar-track { background: #333; border-radius: 99px; height: 4px; margin-top: 0.4rem; }
-    .shipping-bar-fill { background: var(--accent); border-radius: 99px; height: 4px; transition: width 0.3s; }
-    .shipping-hint { font-size: 0.72rem; color: var(--mid); margin-top: 0.3rem; }
+    .shipping-bar-track { background: #1e1e1e; border-radius: 99px; height: 2px; margin-top: 0.4rem; }
+    .shipping-bar-fill { background: var(--accent); border-radius: 99px; height: 2px; transition: width 0.3s; }
+    .shipping-hint { font-size: 0.68rem; color: var(--mid); margin-top: 0.3rem; letter-spacing: 0.06em; }
 
     .btn-checkout {
-      display: block; width: 100%; background: var(--accent); color: #fff;
-      padding: 1rem; font-size: 1rem; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      border: none; border-radius: 2px; cursor: pointer; margin-top: 1.25rem;
+      display: block; width: 100%; background: transparent; color: var(--white);
+      padding: 1rem; font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.15); cursor: pointer; margin-top: 1.25rem;
+      transition: border-color 0.2s, color 0.2s;
     }
-    .btn-checkout:hover { opacity: 0.88; }
-    .btn-checkout:disabled { opacity: 0.4; cursor: default; }
+    .btn-checkout:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-checkout:disabled { opacity: 0.3; cursor: default; }
 
     /* EMPTY */
     .empty { text-align: center; padding: 5rem 2rem; }
-    .empty h2 { font-size: 1.5rem; font-weight: 900; margin-bottom: 0.75rem; }
-    .empty p { color: var(--mid); margin-bottom: 2rem; }
+    .empty h2 { font-size: 1.4rem; font-weight: 300; margin-bottom: 0.75rem; }
+    .empty p { color: var(--mid); margin-bottom: 2rem; font-size: 0.88rem; }
     .btn-design {
-      display: inline-block; background: var(--accent); color: #fff;
-      padding: 0.85rem 2rem; font-size: 0.9rem; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      border-radius: 2px; text-decoration: none;
+      display: inline-block; background: transparent; color: var(--white);
+      padding: 0.85rem 2rem; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.15); text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
     }
+    .btn-design:hover { border-color: var(--accent); color: var(--accent); }
   </style>
 </head>
 <body>
