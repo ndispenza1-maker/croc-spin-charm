@@ -173,11 +173,11 @@
     <!-- UPLOAD -->
     <div class="section">
       <div class="section-label">Upload Your Shape</div>
-      <div class="upload-zone" id="upload-zone">
+      <label class="upload-zone" id="upload-zone" for="upload-input">
         <div class="upload-zone-text">Drop an image or click to upload</div>
         <div class="upload-zone-sub">PNG, JPG, SVG — we extract the silhouette</div>
         <input type="file" id="upload-input" accept="image/*" style="display:none">
-      </div>
+      </label>
       <div class="upload-preview-row">
         <canvas id="upload-thumb" width="44" height="44" style="border-radius:50%;border:1px solid var(--border);display:none"></canvas>
         <span class="upload-name" id="upload-name"></span>
@@ -413,7 +413,6 @@ function initUpload() {
   const name  = document.getElementById('upload-name');
   const clear = document.getElementById('upload-clear');
 
-  zone.addEventListener('click', () => input.click());
   zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
   zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
   zone.addEventListener('drop', e => {
