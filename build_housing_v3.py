@@ -110,41 +110,42 @@ FLANGE_T    = 2.5         # flange thickness
 # Z positions (building bottom to top)
 # Bottom dome tip is at Z=0, flat face at Z=DOME_R
 BOT_DOME_TIP  = 0.0
-BOT_DOME_FLAT = DOME_R                    # 4.05
+BOT_DOME_FLAT = DOME_R                          # 4.05
 
-SHAFT_BOT     = BOT_DOME_FLAT             # 4.05
-SHAFT_TOP     = SHAFT_BOT + SHAFT_H       # 14.05
+SHAFT_BOT     = BOT_DOME_FLAT                   # 4.05
+SHAFT_TOP     = SHAFT_BOT + SHAFT_H             # 14.05
 
-FLANGE_BOT    = SHAFT_TOP                 # 14.05
-FLANGE_TOP    = FLANGE_BOT + FLANGE_T     # 16.55
+# Flange centered at shaft midpoint
+SHAFT_MID     = SHAFT_BOT + SHAFT_H / 2.0       # 9.05
+FLANGE_BOT    = SHAFT_MID - FLANGE_T / 2.0      # 7.80
+FLANGE_TOP    = SHAFT_MID + FLANGE_T / 2.0      # 10.30
 
-TOP_DOME_BASE = FLANGE_TOP                # 16.55
-TOP_DOME_TIP  = TOP_DOME_BASE + DOME_R    # 20.60
+TOP_DOME_BASE = SHAFT_TOP                        # 14.05
+TOP_DOME_TIP  = TOP_DOME_BASE + DOME_R           # 18.10
 
 # ── Geometry ─────────────────────────────────────────────────
 
-# 1. Bottom dome (points downward, dome below SHAFT_BOT)
+# 1. Bottom dome (points downward)
 hemisphere(DOME_R, BOT_DOME_FLAT, N, point_up=False)
-
-# Flat annular face at bottom dome/shaft junction
-# Bottom dome flat face merges into shaft — no face needed (same radius, continuous)
-# But dome_r (4.05) < shaft_r (3.75)? No: dome_r=4.05 > shaft_r=3.75
-# So we need an annular ring face at the junction (inward=True, faces down into dome)
+# Annular ring where dome (r=4.05) meets shaft (r=3.75) — faces inward/down
 ring_face(SHAFT_R, DOME_R, BOT_DOME_FLAT, N, inward=True)
 
-# 2. Shaft
-tube_section(SHAFT_R, SHAFT_BOT, SHAFT_R, SHAFT_TOP, N)
+# 2. Shaft — lower half (bottom dome top → flange bottom)
+tube_section(SHAFT_R, SHAFT_BOT, SHAFT_R, FLANGE_BOT, N)
 
-# 3. Middle flange
-# Bottom face of flange (annular — shaft passes through center)
+# 3. Middle flange (centered on shaft)
+# Bottom face (annular, faces down)
 ring_face(SHAFT_R, FLANGE_R, FLANGE_BOT, N, inward=True)
-# Outer wall of flange
+# Outer wall
 tube_section(FLANGE_R, FLANGE_BOT, FLANGE_R, FLANGE_TOP, N)
-# Top face of flange (annular — shaft continues through center)
+# Top face (annular, faces up)
 ring_face(SHAFT_R, FLANGE_R, FLANGE_TOP, N, inward=False)
 
-# 4. Top dome (points upward from flange top)
-# Dome_R (4.05) > shaft_r (3.75) so annular ring at base
+# 4. Shaft — upper half (flange top → top dome base)
+tube_section(SHAFT_R, FLANGE_TOP, SHAFT_R, SHAFT_TOP, N)
+
+# 5. Top dome (points upward)
+# Annular ring where shaft (r=3.75) meets dome base (r=4.05)
 ring_face(SHAFT_R, DOME_R, TOP_DOME_BASE, N, inward=True)
 hemisphere(DOME_R, TOP_DOME_BASE, N, point_up=True)
 
