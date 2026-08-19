@@ -185,6 +185,8 @@
         <span class="buy-price" id="buy-price">$4.99</span>
       </div>
       <button class="btn-buy" id="buy-btn">Add to Cart</button>
+      <div class="shipping" style="margin-bottom:0.6rem">5 discs auto-bundle at $9.99 &nbsp;·&nbsp; Free shipping over $25</div>
+      <button class="btn-buy" id="buy-base-btn" style="opacity:0.6;margin-top:0.4rem">+ Add a Base — $3.99</button>
       <div class="shipping">+ shipping &nbsp;·&nbsp; Free over $25</div>
     </div>
 
@@ -373,6 +375,16 @@ document.getElementById('buy-btn').addEventListener('click', () => {
     btn.textContent = 'Add to Cart';
     btn.style.background = '';
   }, 1800);
+});
+
+document.getElementById('buy-base-btn').addEventListener('click', () => {
+  const cart = getCart();
+  cart.push({ id: Date.now(), type: 'base' });
+  saveCart(cart);
+  updateBadge();
+  const btn = document.getElementById('buy-base-btn');
+  btn.textContent = '✓ Base Added';
+  setTimeout(() => { btn.textContent = '+ Add a Base — $3.99'; }, 1800);
 });
 </script>
 </body>
