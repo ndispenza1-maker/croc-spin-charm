@@ -100,23 +100,6 @@
     .btn-buy:hover { border-color: var(--accent); color: var(--accent); }
     .shipping { font-size: 0.65rem; color: var(--mid); text-align: center; margin-top: 0.4rem; letter-spacing: 0.06em; }
 
-    /* UPLOAD */
-    .upload-zone {
-      border: 1px dashed rgba(200,169,110,0.25); border-radius: 2px;
-      padding: 1.1rem 0.75rem; text-align: center; cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .upload-zone:hover, .upload-zone.dragover {
-      border-color: var(--accent); background: rgba(200,169,110,0.04);
-    }
-    .upload-zone-text { font-size: 0.72rem; color: var(--mid); letter-spacing: 0.06em; }
-    .upload-zone-sub { font-size: 0.62rem; color: #333; margin-top: 0.25rem; }
-    .upload-preview-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.65rem; }
-    .upload-thumb { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); display: none; }
-    .upload-clear { font-size: 0.65rem; color: var(--mid); background: none; border: none; cursor: pointer; letter-spacing: 0.08em; text-transform: uppercase; padding: 0; display: none; }
-    .upload-clear:hover { color: var(--white); }
-    .upload-name { font-size: 0.65rem; color: var(--mid); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: none; }
-
     /* CUSTOM MODAL */
     .modal-bg {
       display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
@@ -170,21 +153,6 @@
 
   <div class="panel">
 
-    <!-- UPLOAD -->
-    <div class="section">
-      <div class="section-label">Upload Your Shape</div>
-      <label class="upload-zone" id="upload-zone" for="upload-input">
-        <div class="upload-zone-text">Drop an image or click to upload</div>
-        <div class="upload-zone-sub">PNG, JPG, SVG — we extract the silhouette</div>
-        <input type="file" id="upload-input" accept="image/*" style="display:none">
-      </label>
-      <div class="upload-preview-row">
-        <canvas id="upload-thumb" width="44" height="44" style="border-radius:50%;border:1px solid var(--border);display:none"></canvas>
-        <span class="upload-name" id="upload-name"></span>
-        <button class="upload-clear" id="upload-clear">✕ Remove</button>
-      </div>
-    </div>
-
     <!-- FEATURED -->
     <div class="section">
       <div class="section-label">Featured</div>
@@ -213,12 +181,11 @@
     <!-- BUY -->
     <div class="buy">
       <div class="buy-row">
-        <span class="buy-label" id="buy-label">Spinner disc</span>
-        <span class="buy-price" id="buy-price">$1.99</span>
+        <span class="buy-label" id="buy-label">Custom spinner charm</span>
+        <span class="buy-price" id="buy-price">$4.99</span>
       </div>
-      <button class="btn-buy" id="buy-btn">Add Disc to Cart</button>
-      <div class="shipping" style="margin-bottom:0.6rem">5 discs auto-bundle at $9.99 &nbsp;·&nbsp; Free shipping over $25</div>
-      <button class="btn-buy" id="buy-base-btn" style="opacity:0.6;margin-top:0.4rem">+ Add a Base — $3.99</button>
+      <button class="btn-buy" id="buy-btn">Add to Cart</button>
+      <div class="shipping">+ shipping &nbsp;·&nbsp; Free over $25</div>
     </div>
 
   </div>
@@ -269,32 +236,12 @@ function isLight(hex) {
   return (r*299+g*587+b*114)/1000 > 140;
 }
 
-// ── RENDER ───────────────────────────────────────────────────────
 function render() {
   ctx.clearRect(0, 0, 260, 260);
   ctx.save();
   ctx.translate(C, C);
   ctx.rotate(angle);
-
-  if (uploadSilhouette) {
-    // Draw silhouette polar-mapped onto disc
-    const { mask, size } = uploadSilhouette;
-    const steps = 360;
-    for (let s = 0; s < steps; s++) {
-      const a = (s / steps) * Math.PI * 2;
-      for (let ri = 0; ri < 64; ri++) {
-        const r = (ri / 64) * R;
-        const nx = Math.round((0.5 + Math.cos(a) * (ri / 64) * 0.5) * (size - 1));
-        const ny = Math.round((0.5 + Math.sin(a) * (ri / 64) * 0.5) * (size - 1));
-        const idx = ny * size + nx;
-        if (!mask[idx]) continue;
-        const x = Math.cos(a) * r;
-        const y = Math.sin(a) * r;
-        ctx.fillStyle = activeColor;
-        ctx.fillRect(x - 0.8, y - 0.8, 1.6, 1.6);
-      }
-    }
-  } else if (activeIcon) {
+  if (activeIcon) {
     const scale = (R * 2) / 16;
     ctx.save();
     ctx.scale(scale, scale);
@@ -309,7 +256,6 @@ function render() {
     ctx.lineWidth = 2;
     ctx.stroke();
   }
-
   ctx.restore();
   angle += 0.016;
   requestAnimationFrame(render);
@@ -403,108 +349,7 @@ document.getElementById('modal-submit').addEventListener('click', () => {
   document.getElementById('modal').classList.remove('open');
 });
 
-// ── UPLOAD / SILHOUETTE ─────────────────────────────────────────
-let uploadSilhouette = null; // { pixels: Uint8Array, size: number, name: string }
-
-function initUpload() {
-  const zone  = document.getElementById('upload-zone');
-  const input = document.getElementById('upload-input');
-  const thumb = document.getElementById('upload-thumb');
-  const name  = document.getElementById('upload-name');
-  const clear = document.getElementById('upload-clear');
-
-  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
-  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-  zone.addEventListener('drop', e => {
-    e.preventDefault(); zone.classList.remove('dragover');
-    const f = e.dataTransfer.files[0];
-    if (f && f.type.startsWith('image/')) loadUpload(f);
-  });
-  input.addEventListener('change', () => { if (input.files[0]) loadUpload(input.files[0]); });
-  clear.addEventListener('click', clearUpload);
-}
-
-function loadUpload(file) {
-  const img = new Image();
-  const url = URL.createObjectURL(file);
-  img.onload = () => {
-    URL.revokeObjectURL(url);
-    const SIZE = 256;
-    const off = document.createElement('canvas');
-    off.width = off.height = SIZE;
-    const octx = off.getContext('2d');
-    const side = Math.min(img.width, img.height);
-    octx.drawImage(img, (img.width-side)/2, (img.height-side)/2, side, side, 0, 0, SIZE, SIZE);
-    const imgData = octx.getImageData(0, 0, SIZE, SIZE);
-
-    // Extract silhouette: alpha > 32 OR (if opaque image) luminance < 200
-    const hasAlpha = checkHasAlpha(imgData);
-    const mask = new Uint8Array(SIZE * SIZE);
-    for (let i = 0; i < SIZE * SIZE; i++) {
-      const r = imgData.data[i*4], g = imgData.data[i*4+1],
-            b = imgData.data[i*4+2], a = imgData.data[i*4+3];
-      mask[i] = hasAlpha ? (a > 32 ? 1 : 0)
-                         : ((r*299+g*587+b*114)/1000 < 200 ? 1 : 0);
-    }
-
-    uploadSilhouette = { mask, size: SIZE, name: file.name.replace(/\.[^.]+$/, '') };
-
-    // Thumb: draw silhouette in gold on dark bg
-    const thumb = document.getElementById('upload-thumb');
-    const tctx  = thumb.getContext('2d');
-    tctx.fillStyle = '#111';
-    tctx.fillRect(0, 0, 44, 44);
-    const scale = 44 / SIZE;
-    tctx.fillStyle = '#c8a96e';
-    for (let y = 0; y < SIZE; y++) {
-      for (let x = 0; x < SIZE; x++) {
-        if (mask[y * SIZE + x]) {
-          tctx.fillRect(x * scale, y * scale, scale + 0.5, scale + 0.5);
-        }
-      }
-    }
-    thumb.style.display = 'block';
-    document.getElementById('upload-name').textContent = uploadSilhouette.name;
-    document.getElementById('upload-name').style.display = 'block';
-    document.getElementById('upload-clear').style.display = 'block';
-
-    // Switch preview to upload mode
-    activeIcon = null;
-    document.querySelectorAll('.shape-tile').forEach(t => t.classList.remove('active'));
-    document.getElementById('shape-select').value = '';
-    document.getElementById('selected-name').textContent = uploadSilhouette.name;
-    document.getElementById('buy-label').textContent = 'Custom shape';
-    document.getElementById('buy-price').textContent = '$9.99';
-  };
-  img.src = url;
-}
-
-function checkHasAlpha(imgData) {
-  for (let i = 3; i < imgData.data.length; i += 4) {
-    if (imgData.data[i] < 255) return true;
-  }
-  return false;
-}
-
-function clearUpload() {
-  uploadSilhouette = null;
-  const thumb = document.getElementById('upload-thumb');
-  const tctx  = thumb.getContext('2d');
-  tctx.clearRect(0, 0, 44, 44);
-  thumb.style.display = 'none';
-  document.getElementById('upload-name').style.display = 'none';
-  document.getElementById('upload-clear').style.display = 'none';
-  document.getElementById('upload-input').value = '';
-  document.getElementById('buy-label').textContent = 'Spinner disc';
-  document.getElementById('buy-price').textContent = '$1.99';
-  // Restore first featured icon
-  const first = FEATURED.find(n => icons[n]);
-  if (first) selectIcon(first);
-}
-
-initUpload();
-
-// ── RENDER: override canvas render to support silhouette mode ────
+// ── CART ─────────────────────────────────────────────────────────
 function getCart() { return JSON.parse(localStorage.getItem('spinnlitz-cart') || '[]'); }
 function saveCart(c) { localStorage.setItem('spinnlitz-cart', JSON.stringify(c)); }
 
@@ -515,29 +360,19 @@ function updateBadge() {
 updateBadge();
 
 document.getElementById('buy-btn').addEventListener('click', () => {
-  if (!activeIcon && !uploadSilhouette) { alert('Pick a shape or upload an image first!'); return; }
+  if (!activeIcon) { alert('Pick a shape first!'); return; }
   const preview = canvas.toDataURL('image/png');
   const cart = getCart();
-  if (uploadSilhouette) {
-    cart.push({ id: Date.now(), type: 'custom', shape: uploadSilhouette.name, color: activeColor, preview });
-  } else {
-    cart.push({ id: Date.now(), type: 'disc', shape: activeIcon.name, color: activeColor, preview });
-  }
+  cart.push({ id: Date.now(), shape: activeIcon.name, color: activeColor, preview });
   saveCart(cart);
   updateBadge();
   const btn = document.getElementById('buy-btn');
-  btn.textContent = '✓ Added';
-  setTimeout(() => { btn.textContent = 'Add Disc to Cart'; }, 1800);
-});
-
-document.getElementById('buy-base-btn').addEventListener('click', () => {
-  const cart = getCart();
-  cart.push({ id: Date.now(), type: 'base' });
-  saveCart(cart);
-  updateBadge();
-  const btn = document.getElementById('buy-base-btn');
-  btn.textContent = '✓ Base Added';
-  setTimeout(() => { btn.textContent = '+ Add a Base — $3.99'; }, 1800);
+  btn.textContent = '✓ Added — View Cart';
+  btn.style.background = '#222';
+  setTimeout(() => {
+    btn.textContent = 'Add to Cart';
+    btn.style.background = '';
+  }, 1800);
 });
 </script>
 </body>
