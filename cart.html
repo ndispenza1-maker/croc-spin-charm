@@ -174,6 +174,7 @@ function renderCart() {
 
   const discs = cart.filter(i => i.type === 'disc' || !i.type);
   const bases = cart.filter(i => i.type === 'base');
+  const customs = cart.filter(i => i.type === 'custom');
 
   let subtotal = 0;
   const groupsEl = document.getElementById('groups');
@@ -264,6 +265,39 @@ function renderCart() {
 
     groupDiv.appendChild(itemsDiv);
     groupsEl.appendChild(groupDiv);
+  }
+
+  // --- CUSTOM UPLOADED SHAPES ---
+  if (customs.length > 0) {
+    customs.forEach(item => {
+      const groupDiv = document.createElement('div');
+      groupDiv.className = 'group';
+
+      const header = document.createElement('div');
+      header.className = 'group-header single';
+      header.innerHTML = `<span>Custom Shape</span><span class="group-price">$9.99</span>`;
+      groupDiv.appendChild(header);
+      subtotal += 9.99;
+
+      const itemsDiv = document.createElement('div');
+      itemsDiv.className = 'items';
+      const row = document.createElement('div');
+      row.className = 'item';
+      row.innerHTML = `
+        <img class="item-img" src="${item.preview}" alt="${item.shape}" />
+        <div class="item-info">
+          <div class="item-name">${item.shape.replace(/-/g,' ')}</div>
+          <div class="item-color">
+            <span class="color-dot" style="background:${item.color}"></span>
+            Custom silhouette
+          </div>
+        </div>
+        <span class="item-price">$9.99</span>
+        <button class="item-remove" data-id="${item.id}" title="Remove">✕</button>`;
+      itemsDiv.appendChild(row);
+      groupDiv.appendChild(itemsDiv);
+      groupsEl.appendChild(groupDiv);
+    });
   }
 
   // Remove buttons
