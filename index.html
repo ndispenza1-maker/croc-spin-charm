@@ -20,7 +20,6 @@
     }
 
     html { scroll-behavior: smooth; }
-
     body {
       background: var(--black);
       color: var(--white);
@@ -29,443 +28,352 @@
       overflow-x: hidden;
     }
 
-    /* NAV */
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.6rem 3rem;
+    .sidebar {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      inset: 0 auto 0 0;
       z-index: 100;
-      mix-blend-mode: normal;
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      padding: 2.2rem 1.8rem 1.8rem;
+      background: #0d1235;
+      border-right: 1px solid var(--dim);
     }
     .logo {
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
       color: var(--white);
-      opacity: 0.5;
-    }
-    .nav-cta {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--accent);
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.22em;
       text-decoration: none;
-      opacity: 0.8;
-      transition: opacity 0.2s;
+      text-transform: uppercase;
     }
-    .nav-cta:hover { opacity: 1; }
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+      margin-top: 5rem;
+    }
+    .sidebar-nav a,
+    .cart-link {
+      color: var(--mid);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .sidebar-nav a:hover,
+    .sidebar-nav a.active,
+    .cart-link:hover { color: var(--accent); }
+    .cart-link {
+      margin-top: auto;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--dim);
+    }
 
-    /* HERO */
+    main { margin-left: 220px; }
     .hero {
-      background: radial-gradient(ellipse at 50% 60%, #1a1060 0%, #0a0e2e 70%);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 8rem 2rem 4rem;
+      padding: 5rem 2rem;
       position: relative;
+      text-align: center;
+      background: radial-gradient(ellipse at 50% 50%, #1a1060 0%, var(--black) 70%);
     }
-
-    /* SPINNER CANVAS */
-    #hero-canvas {
-      display: block;
-      margin-bottom: 3.5rem;
-    }
-
-    .hero-eyebrow {
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.26em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1.2rem;
-      opacity: 0.8;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.6rem, 6vw, 5rem);
-      font-weight: 300;
-      letter-spacing: -0.01em;
-      line-height: 1.1;
-      margin-bottom: 1.4rem;
-      color: var(--white);
-    }
-    .hero h1 em {
-      font-style: normal;
-      font-weight: 700;
-    }
-
-    .hero p {
-      font-size: clamp(0.9rem, 2vw, 1.05rem);
-      color: var(--soft);
-      max-width: 380px;
-      margin: 0 auto 3rem;
-      line-height: 1.7;
-    }
-
-    .btn-primary {
-      display: inline-block;
-      background: transparent;
-      color: var(--white);
-      border: 1px solid rgba(255,255,255,0.2);
-      padding: 0.85rem 2.4rem;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      text-decoration: none;
-      border-radius: 1px;
-      transition: border-color 0.25s, color 0.25s;
-    }
-    .btn-primary:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    /* SCROLL HINT */
-    .scroll-hint {
-      position: absolute;
-      bottom: 2.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      opacity: 0.25;
-    }
-    .scroll-line {
-      width: 1px;
-      height: 40px;
-      background: var(--white);
-      animation: scrollDown 2s ease-in-out infinite;
-    }
-    @keyframes scrollDown {
-      0% { transform: scaleY(0); transform-origin: top; }
-      50% { transform: scaleY(1); transform-origin: top; }
-      51% { transform: scaleY(1); transform-origin: bottom; }
-      100% { transform: scaleY(0); transform-origin: bottom; }
-    }
-
-    /* DIVIDER */
-    .divider {
-      width: 1px;
-      height: 80px;
-      background: linear-gradient(to bottom, transparent, var(--dim), transparent);
-      margin: 0 auto;
-    }
-
-    /* SECTIONS */
-    .section {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 6rem 2rem;
-    }
-
+    #hero-canvas { display: block; margin-bottom: 2.5rem; }
+    .eyebrow,
     .section-label {
+      color: var(--accent);
       font-size: 0.65rem;
       font-weight: 700;
       letter-spacing: 0.24em;
       text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1rem;
-      opacity: 0.7;
     }
-
-    .section h2 {
-      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-      font-weight: 300;
-      letter-spacing: -0.01em;
-      margin-bottom: 3.5rem;
+    .eyebrow { margin-bottom: 1rem; }
+    .hero h1 {
+      max-width: 780px;
+      margin-bottom: 1.4rem;
       color: var(--white);
+      font-size: clamp(2.7rem, 6vw, 5.5rem);
+      font-weight: 300;
+      letter-spacing: 0;
+      line-height: 1.05;
     }
-    .section h2 strong { font-weight: 700; }
+    .hero h1 strong { font-weight: 800; }
+    .hero p {
+      max-width: 420px;
+      margin-bottom: 2.4rem;
+      color: var(--soft);
+      font-size: 1rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0.8rem 1.4rem;
+      border: 1px solid var(--dim);
+      border-radius: 2px;
+      background: transparent;
+      color: var(--white);
+      font: inherit;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .btn:hover { border-color: var(--accent); color: var(--accent); }
+    .btn.accent { border-color: var(--accent); background: var(--accent); color: var(--black); }
+    .btn.accent:hover { background: var(--soft); color: var(--black); }
 
-    /* STEPS */
+    .section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 7rem 3rem;
+      scroll-margin-top: 1rem;
+    }
+    .section + .section { border-top: 1px solid var(--dim); }
+    .section-label { margin-bottom: 0.9rem; }
+    .section h2 {
+      margin-bottom: 3rem;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 300;
+      letter-spacing: 0;
+      line-height: 1.2;
+    }
+    .section h2 strong { font-weight: 800; }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .product-card {
+      min-height: 310px;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+      background: #0c1235;
+      border: 1px solid var(--dim);
+      border-radius: 4px;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .product-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .product-card h3 { margin-bottom: 0.5rem; font-size: 1.15rem; }
+    .product-price { margin-bottom: 1.2rem; color: var(--accent); font-size: 1.7rem; font-weight: 800; }
+    .product-card p { margin-bottom: 2rem; color: var(--soft); font-size: 0.9rem; }
+    .product-card .btn { width: 100%; margin-top: auto; }
+
     .steps {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 3rem;
     }
-    .step-num {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      color: var(--accent);
-      margin-bottom: 1rem;
-      opacity: 0.6;
-    }
-    .step h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: var(--white);
-    }
-    .step p {
-      font-size: 0.88rem;
-      color: var(--soft);
-      line-height: 1.7;
-    }
+    .step-num { margin-bottom: 1rem; color: var(--accent); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; }
+    .step h3 { margin-bottom: 0.5rem; font-size: 1rem; }
+    .step p { color: var(--soft); font-size: 0.88rem; }
 
-    /* PRICING */
     .pricing-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 1px;
       background: var(--dim);
       border: 1px solid var(--dim);
     }
-
-    .pricing-card {
-      background: var(--black);
-      padding: 2.5rem 2rem;
-      position: relative;
-    }
-    .pricing-card.featured {
-      background: #0c1235;
-    }
+    .pricing-card { position: relative; padding: 2.5rem 2rem; background: var(--black); }
+    .pricing-card.featured { background: #0c1235; }
     .pricing-card.featured::before {
       content: 'STARTER';
       position: absolute;
-      top: -1px; left: 2rem;
+      top: -1px;
+      left: 2rem;
+      padding: 0.2rem 0.6rem;
       background: var(--accent);
-      color: #0a0e2e;
+      color: var(--black);
       font-size: 0.58rem;
       font-weight: 700;
       letter-spacing: 0.18em;
-      padding: 0.2rem 0.6rem;
     }
+    .card-label { margin-bottom: 1.2rem; color: var(--soft); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
+    .price { margin-bottom: 0.3rem; color: var(--white); font-size: 2.8rem; font-weight: 700; line-height: 1; }
+    .price sup { margin-right: 0.1rem; font-size: 1.1rem; font-weight: 400; vertical-align: super; }
+    .price-note { min-height: 3.5rem; margin-bottom: 2rem; color: var(--mid); font-size: 0.78rem; line-height: 1.5; }
+    .perks { min-height: 8.5rem; display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 2rem; list-style: none; }
+    .perks li { display: flex; gap: 0.75rem; color: var(--soft); font-size: 0.85rem; }
+    .perks li::before { content: '–'; color: var(--accent); flex-shrink: 0; }
+    .pricing-card .btn { width: 100%; }
+    .pricing-note { margin-top: 1.5rem; color: var(--mid); font-size: 0.75rem; text-align: center; }
 
-    .card-label {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--soft);
-      margin-bottom: 1.2rem;
-    }
-
-    .price {
-      font-size: 2.8rem;
-      font-weight: 700;
-      line-height: 1;
-      color: var(--white);
-      margin-bottom: 0.3rem;
-    }
-    .price sup {
-      font-size: 1.1rem;
-      font-weight: 400;
-      vertical-align: super;
-      margin-right: 0.1rem;
-    }
-    .price-note {
-      font-size: 0.78rem;
-      color: var(--mid);
-      margin-bottom: 2rem;
-      line-height: 1.5;
-    }
-
-    .perks {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.7rem;
-      margin-bottom: 2rem;
-    }
-    .perks li {
-      font-size: 0.85rem;
-      color: var(--soft);
-      display: flex;
-      gap: 0.75rem;
-      align-items: flex-start;
-    }
-    .perks li::before {
-      content: '–';
-      color: var(--accent);
-      opacity: 0.7;
-      flex-shrink: 0;
-    }
-
-    .btn-card {
-      display: block;
-      width: 100%;
-      background: transparent;
-      color: var(--white);
-      border: 1px solid var(--dim);
-      padding: 0.8rem;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      text-decoration: none;
-      text-align: center;
-      transition: border-color 0.2s, color 0.2s;
-      cursor: pointer;
-    }
-    .btn-card:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-    .btn-card.accent {
-      background: var(--accent);
-      color: #0a0e2e;
-      border-color: var(--accent);
-      font-weight: 900;
-    }
-    .btn-card.accent:hover {
-      opacity: 0.88;
-      color: #000;
-    }
-
-    .pricing-note {
-      text-align: center;
-      margin-top: 1.5rem;
-      font-size: 0.75rem;
-      color: var(--mid);
-    }
-
-    /* FOOTER */
     footer {
-      padding: 3rem 2rem;
+      margin-left: 220px;
+      padding: 2.5rem 3rem;
       border-top: 1px solid var(--dim);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      max-width: 860px;
-      margin: 0 auto;
-    }
-    footer span {
-      font-size: 0.72rem;
       color: var(--mid);
+      font-size: 0.72rem;
       letter-spacing: 0.08em;
+      text-align: center;
     }
 
-    @media (max-width: 520px) {
-      nav { padding: 1.2rem 1.5rem; }
-      .section { padding: 4rem 1.5rem; }
-      .steps { gap: 2rem; }
-      footer { padding: 2rem 1.5rem; }
+    @media (max-width: 760px) {
+      .sidebar {
+        inset: 0 0 auto 0;
+        width: auto;
+        height: 64px;
+        flex-direction: row;
+        align-items: center;
+        padding: 0 1.25rem;
+        border-right: 0;
+        border-bottom: 1px solid var(--dim);
+      }
+      .logo { font-size: 0.78rem; }
+      .sidebar-nav { flex-direction: row; gap: 1rem; margin: 0 0 0 auto; }
+      .sidebar-nav a { font-size: 0.56rem; letter-spacing: 0.12em; }
+      .cart-link { margin: 0 0 0 1rem; padding: 0; border: 0; font-size: 0; }
+      .cart-link::before { content: '🛒'; font-size: 1rem; }
+      main, footer { margin-left: 0; }
+      .hero { min-height: 760px; padding-top: 7rem; }
+      .section { padding: 5rem 1.5rem; scroll-margin-top: 64px; }
+      .product-grid, .pricing-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; gap: 2.2rem; }
+      .price-note, .perks { min-height: 0; }
+    }
+
+    @media (max-width: 480px) {
+      .sidebar { padding: 0 0.9rem; }
+      .sidebar-nav { gap: 0.65rem; }
+      .sidebar-nav a { font-size: 0.5rem; letter-spacing: 0.08em; }
+      .sidebar-nav a[href="/studio.html"] { display: none; }
+      .cart-link { margin-left: 0.7rem; }
+      #hero-canvas { width: 170px; height: 170px; }
     }
   </style>
 </head>
 <body>
+  <aside class="sidebar">
+    <a class="logo" href="#top">Spinnlitz</a>
+    <nav class="sidebar-nav" aria-label="Store sections">
+      <a href="#shop">SHOP</a>
+      <a href="#how-it-works">HOW IT WORKS</a>
+      <a href="#pricing">PRICING</a>
+      <a href="/studio.html">STUDIO</a>
+    </nav>
+    <a class="cart-link" href="/cart.html">🛒 Cart</a>
+  </aside>
 
-  <nav>
-    <div class="logo">Spinnlitz</div>
-    <a class="nav-cta" href="/studio.html">Design yours</a>
-  </nav>
+  <main>
+    <section class="hero" id="top">
+      <canvas id="hero-canvas" width="200" height="200" aria-label="Animated spinning Spinnlitz disc"></canvas>
+      <div class="eyebrow">Spinning shoe charms</div>
+      <h1>Wear something <strong>that moves.</strong></h1>
+      <p>Custom spinning charms for your shoes. Pick your icon, choose your color, and make it yours.</p>
+      <a class="btn accent" href="/studio.html">Open Studio</a>
+    </section>
 
-  <!-- HERO -->
-  <section class="hero">
-    <canvas id="hero-canvas" width="200" height="200"></canvas>
-    <div class="hero-eyebrow">Spinning shoe charms</div>
-    <h1>Wear something<br><em>that moves.</em></h1>
-    <p>Custom spinning charms for your shoes. Pick a shape, pick a color — we print it and ship it.</p>
-    <a class="btn-primary" href="/studio.html">Start designing</a>
-    <div class="scroll-hint">
-      <div class="scroll-line"></div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- HOW IT WORKS -->
-  <section class="section">
-    <div class="section-label">How it works</div>
-    <h2>Three steps.<br><strong>That's it.</strong></h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <h3>Design</h3>
-        <p>Open the studio. Pick your shape from thousands of icons or request something custom. Choose your color.</p>
+    <section class="section" id="shop">
+      <div class="section-label">Shop</div>
+      <h2>Choose your <strong>spin.</strong></h2>
+      <div class="product-grid">
+        <article class="product-card">
+          <h3>Custom Disc</h3>
+          <div class="product-price">$4.99</div>
+          <p>Your icon, your color. We print it.</p>
+          <a class="btn" href="/studio.html">Design Yours</a>
+        </article>
+        <article class="product-card">
+          <h3>Starter Pack</h3>
+          <div class="product-price">$9.99</div>
+          <p>2 bases + 2 discs. Everything to get rolling.</p>
+          <a class="btn accent" href="/studio.html">Get Started</a>
+        </article>
+        <article class="product-card">
+          <h3>Custom Gym / Team Order</h3>
+          <div class="product-price">Bulk</div>
+          <p>Logo + text on a 50mm disc. Batch pricing available.</p>
+          <a class="btn" href="mailto:spinnlitz@gmail.com">Get a Quote</a>
+        </article>
       </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <h3>Order</h3>
-        <p>We 3D print your disc to order. No mass production. Each one made for you.</p>
+    </section>
+
+    <section class="section" id="how-it-works">
+      <div class="section-label">How it works</div>
+      <h2>Three steps. <strong>That's it.</strong></h2>
+      <div class="steps">
+        <article class="step">
+          <div class="step-num">01</div>
+          <h3>Design</h3>
+          <p>Open the studio. Pick your shape from thousands of icons or request something custom. Choose your color.</p>
+        </article>
+        <article class="step">
+          <div class="step-num">02</div>
+          <h3>Print</h3>
+          <p>We 3D print your disc to order. No mass production. Each one made for you.</p>
+        </article>
+        <article class="step">
+          <div class="step-num">03</div>
+          <h3>Ship</h3>
+          <p>Your Spinnlitz ships to your door, ready to press into any standard shoe hole and spin.</p>
+        </article>
       </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <h3>Press in</h3>
-        <p>Drop it into any standard shoe hole. It spins freely. Stays put. Looks sharp.</p>
+    </section>
+
+    <section class="section" id="pricing">
+      <div class="section-label">Pricing</div>
+      <h2>Simple. <strong>No surprises.</strong></h2>
+      <div class="pricing-grid">
+        <article class="pricing-card featured">
+          <div class="card-label">Starter Pack</div>
+          <div class="price"><sup>$</sup>9.99</div>
+          <div class="price-note">2 bases + 2 spinner discs<br />Everything you need to start.</div>
+          <ul class="perks">
+            <li>2 housing bases</li>
+            <li>2 custom spinner discs</li>
+            <li>Design each disc yourself</li>
+            <li>Mix colors and shapes</li>
+          </ul>
+          <a class="btn accent" href="/studio.html">Get Started</a>
+        </article>
+        <article class="pricing-card">
+          <div class="card-label">Bases</div>
+          <div class="price"><sup>$</sup>3.99</div>
+          <div class="price-note">per base<br />Add more shoes to the rotation.</div>
+          <ul class="perks">
+            <li>Housing base only</li>
+            <li>Fits any standard shoe hole</li>
+            <li>Pair with any disc</li>
+          </ul>
+          <a class="btn" href="/studio.html">Add a Base</a>
+        </article>
+        <article class="pricing-card">
+          <div class="card-label">Spinner Discs</div>
+          <div class="price"><sup>$</sup>1.99</div>
+          <div class="price-note">each &nbsp;·&nbsp; or 5 for $9.99<br />Swap your look anytime.</div>
+          <ul class="perks">
+            <li>One custom disc</li>
+            <li>Your shape, your color</li>
+            <li>Snaps onto any base</li>
+            <li>5-pack saves 40%</li>
+          </ul>
+          <a class="btn" href="/studio.html">Design a Disc</a>
+        </article>
       </div>
-    </div>
-  </section>
+      <div class="pricing-note">+ shipping on all orders &nbsp;·&nbsp; Free over $25</div>
+    </section>
+  </main>
 
-  <div class="divider"></div>
-
-  <!-- PRICING -->
-  <section class="section" id="pricing">
-    <div class="section-label">Pricing</div>
-    <h2>Simple.<br><strong>No surprises.</strong></h2>
-
-    <div class="pricing-grid">
-
-      <div class="pricing-card featured">
-        <div class="card-label">Starter Pack</div>
-        <div class="price"><sup>$</sup>9.99</div>
-        <div class="price-note">2 bases + 2 spinner discs<br>Everything you need to start.</div>
-        <ul class="perks">
-          <li>2 housing bases</li>
-          <li>2 custom spinner discs</li>
-          <li>Design each disc yourself</li>
-          <li>Mix colors and shapes</li>
-        </ul>
-        <a class="btn-card accent" href="/studio.html">Get Started</a>
-      </div>
-
-      <div class="pricing-card">
-        <div class="card-label">Bases</div>
-        <div class="price"><sup>$</sup>3.99</div>
-        <div class="price-note">per base<br>Add more shoes to the rotation.</div>
-        <ul class="perks">
-          <li>Housing base only</li>
-          <li>Fits any standard shoe hole</li>
-          <li>Pair with any disc</li>
-        </ul>
-        <a class="btn-card" href="/studio.html">Add a Base</a>
-      </div>
-
-      <div class="pricing-card">
-        <div class="card-label">Spinner Discs</div>
-        <div class="price"><sup>$</sup>1.99</div>
-        <div class="price-note">each &nbsp;·&nbsp; or 5 for $9.99<br>Swap your look anytime.</div>
-        <ul class="perks">
-          <li>One custom disc</li>
-          <li>Your shape, your color</li>
-          <li>Snaps onto any base</li>
-          <li>5-pack saves 40%</li>
-        </ul>
-        <a class="btn-card" href="/studio.html">Design a Disc</a>
-      </div>
-
-    </div>
-
-    <div class="pricing-note">+ shipping on all orders &nbsp;·&nbsp; Free over $25</div>
-  </section>
-
-  <footer>
-    <span>Spinnlitz</span>
-    <span>LFH Productions</span>
-  </footer>
+  <footer>Spinnlitz · LFH Productions</footer>
 
   <script>
-    // ── HERO SPINNER ─────────────────────────────────────────────
     const canvas = document.getElementById('hero-canvas');
     const ctx = canvas.getContext('2d');
     const W = 200, H = 200, CX = 100, CY = 100, R = 72;
     let angle = 0;
 
-    // Ray design — 8 curved spokes
     function drawDisc(a) {
       ctx.clearRect(0, 0, W, H);
       ctx.save();
@@ -477,12 +385,10 @@
         ctx.save();
         ctx.rotate((Math.PI * 2 / spokes) * i);
         ctx.beginPath();
-        // Curved spoke using quadratic bezier
         ctx.moveTo(0, -8);
         ctx.quadraticCurveTo(R * 0.55, -R * 0.45, R * 0.62, -R * 0.78);
         ctx.lineWidth = 5;
         ctx.lineCap = 'round';
-        // Soft gold gradient
         const grad = ctx.createLinearGradient(0, -8, R * 0.62, -R * 0.78);
         grad.addColorStop(0, 'rgba(255,110,180,0.9)');
         grad.addColorStop(1, 'rgba(255,140,80,0.15)');
@@ -491,19 +397,16 @@
         ctx.restore();
       }
 
-      // Outer ring
       ctx.beginPath();
       ctx.arc(0, 0, R, 0, Math.PI * 2);
       ctx.strokeStyle = 'rgba(255,110,180,0.15)';
       ctx.lineWidth = 1;
       ctx.stroke();
 
-      // Center hub
       ctx.beginPath();
       ctx.arc(0, 0, 6, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(255,110,180,0.4)';
       ctx.fill();
-
       ctx.restore();
     }
 
@@ -511,13 +414,24 @@
     function loop(ts) {
       const dt = ts - lastTs;
       lastTs = ts;
-      // Very slow — ~12 seconds per revolution
       angle += (Math.PI * 2 / 12000) * dt;
       drawDisc(angle);
       requestAnimationFrame(loop);
     }
     requestAnimationFrame(loop);
-  </script>
 
+    const sectionLinks = [...document.querySelectorAll('.sidebar-nav a[href^="#"]')];
+    const sections = sectionLinks.map(link => document.querySelector(link.getAttribute('href')));
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      sectionLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === `#${visible.target.id}`);
+      });
+    }, { rootMargin: '-20% 0px -55% 0px', threshold: [0, 0.25, 0.5] });
+    sections.forEach(section => observer.observe(section));
+  </script>
 </body>
 </html>
