@@ -3,435 +3,653 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spinnlitz</title>
-  <meta name="description" content="Spinning shoe charms. Design your own. Ships to your door." />
+  <title>Spinnlitz — Custom Spinning Charms</title>
+  <meta name="description" content="Custom 3D-printed spinning shoe charms. Pick a shape, pick a color, we print it." />
   <script defer src="/_vercel/insights/script.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --black: #0a0e2e;
-      --white: #fff0f8;
+      --black:  #0a0e2e;
+      --white:  #fff0f8;
       --accent: #ff6eb4;
-      --dim: #1a2a6c;
-      --mid: #7ab3d4;
-      --soft: #ffb3d9;
+      --dim:    #1a2a6c;
+      --mid:    #7ab3d4;
+      --soft:   #ffb3d9;
+      --sidebar-bg: #0d1235;
+      --card-bg:    #0c1235;
       --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
-    html { scroll-behavior: smooth; }
+    html, body { height: 100%; }
+
     body {
       background: var(--black);
       color: var(--white);
       font-family: var(--font);
-      line-height: 1.6;
-      overflow-x: hidden;
+      display: flex;
+      overflow: hidden;
     }
 
+    /* ── SIDEBAR ── */
     .sidebar {
-      position: fixed;
-      inset: 0 auto 0 0;
-      z-index: 100;
       width: 220px;
+      flex-shrink: 0;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--dim);
       display: flex;
       flex-direction: column;
-      padding: 2.2rem 1.8rem 1.8rem;
-      background: #0d1235;
-      border-right: 1px solid var(--dim);
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow-y: auto;
     }
-    .logo {
-      color: var(--white);
+
+    .sidebar-logo {
+      padding: 1.8rem 1.5rem 1.2rem;
       font-size: 1rem;
-      font-weight: 800;
-      letter-spacing: 0.22em;
-      text-decoration: none;
+      font-weight: 900;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
+      color: var(--white);
+      text-decoration: none;
+      border-bottom: 1px solid var(--dim);
+      display: block;
     }
+    .sidebar-logo span { color: var(--accent); }
+
     .sidebar-nav {
       display: flex;
       flex-direction: column;
-      gap: 1.4rem;
-      margin-top: 5rem;
+      padding: 1.2rem 0;
+      flex: 1;
     }
-    .sidebar-nav a,
-    .cart-link {
-      color: var(--mid);
-      font-size: 0.65rem;
+
+    .nav-section-label {
+      font-size: 0.55rem;
       font-weight: 700;
-      letter-spacing: 0.2em;
-      text-decoration: none;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      transition: color 0.2s;
+      color: var(--mid);
+      opacity: 0.5;
+      padding: 0.9rem 1.5rem 0.4rem;
     }
-    .sidebar-nav a:hover,
-    .sidebar-nav a.active,
-    .cart-link:hover { color: var(--accent); }
-    .cart-link {
-      margin-top: auto;
-      padding-top: 1.2rem;
+
+    .sidebar-nav a {
+      display: block;
+      padding: 0.55rem 1.5rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--white);
+      opacity: 0.55;
+      transition: opacity 0.15s, color 0.15s;
+      border-left: 2px solid transparent;
+    }
+    .sidebar-nav a:hover { opacity: 1; }
+    .sidebar-nav a.active {
+      color: var(--accent);
+      opacity: 1;
+      border-left-color: var(--accent);
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: var(--dim);
+      margin: 0.6rem 1.5rem;
+    }
+
+    .sidebar-bottom {
+      padding: 1.2rem 1.5rem;
       border-top: 1px solid var(--dim);
     }
 
-    main { margin-left: 220px; }
-    .hero {
-      min-height: 100vh;
+    .cart-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.65rem 1rem;
+      background: transparent;
+      border: 1px solid var(--dim);
+      color: var(--white);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+      width: 100%;
+      justify-content: center;
+    }
+    .cart-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .cart-badge {
+      background: var(--accent);
+      color: #000;
+      font-size: 0.65rem;
+      font-weight: 900;
+      border-radius: 99px;
+      padding: 0.1rem 0.4rem;
+      min-width: 18px;
+      text-align: center;
+      display: none;
+    }
+    .cart-badge.has-items { display: inline-block; }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      height: 100vh;
+    }
+
+    /* ── SHOP HEADER ── */
+    .shop-header {
+      padding: 2.4rem 3rem 1.6rem;
+      border-bottom: 1px solid var(--dim);
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+    }
+    .shop-header h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .shop-header .item-count {
+      font-size: 0.72rem;
+      color: var(--mid);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── PRODUCT GRID ── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1px;
+      background: var(--dim);
+      border-top: 1px solid var(--dim);
+    }
+
+    .product-card {
+      background: var(--card-bg);
       display: flex;
       flex-direction: column;
+      transition: background 0.2s;
+    }
+    .product-card:hover { background: #0e1540; }
+
+    .product-visual {
+      aspect-ratio: 1;
+      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 5rem 2rem;
+      background: #080d28;
+      border-bottom: 1px solid var(--dim);
       position: relative;
-      text-align: center;
-      background: radial-gradient(ellipse at 50% 50%, #1a1060 0%, var(--black) 70%);
+      overflow: hidden;
     }
-    #hero-canvas { display: block; margin-bottom: 2.5rem; }
-    .eyebrow,
-    .section-label {
-      color: var(--accent);
+
+    .product-visual canvas {
+      display: block;
+    }
+
+    .product-visual .badge {
+      position: absolute;
+      top: 0.8rem;
+      left: 0.8rem;
+      background: var(--accent);
+      color: #0a0e2e;
+      font-size: 0.58rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+    }
+
+    .product-info {
+      padding: 1.4rem 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35rem;
+    }
+
+    .product-desc {
+      font-size: 0.8rem;
+      color: var(--soft);
+      line-height: 1.6;
+      flex: 1;
+      margin-bottom: 1.2rem;
+    }
+
+    .product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .product-price {
+      font-size: 1.3rem;
+      font-weight: 300;
+      color: var(--white);
+    }
+    .product-price sup {
+      font-size: 0.8rem;
+      vertical-align: super;
+    }
+    .product-price .per {
       font-size: 0.65rem;
+      color: var(--mid);
+      margin-left: 0.2rem;
+      font-weight: 400;
+    }
+
+    .btn-shop {
+      padding: 0.6rem 1.2rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid var(--dim);
+      color: var(--white);
+      background: transparent;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-shop:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-shop.primary {
+      background: var(--accent);
+      color: #0a0e2e;
+      border-color: var(--accent);
+    }
+    .btn-shop.primary:hover { opacity: 0.88; }
+
+    /* ── SECTION: HOW IT WORKS ── */
+    .content-section {
+      padding: 3.5rem 3rem;
+      border-bottom: 1px solid var(--dim);
+      max-width: 860px;
+    }
+
+    .section-eyebrow {
+      font-size: 0.62rem;
       font-weight: 700;
       letter-spacing: 0.24em;
       text-transform: uppercase;
+      color: var(--accent);
+      opacity: 0.8;
+      margin-bottom: 0.8rem;
     }
-    .eyebrow { margin-bottom: 1rem; }
-    .hero h1 {
-      max-width: 780px;
-      margin-bottom: 1.4rem;
-      color: var(--white);
-      font-size: clamp(2.7rem, 6vw, 5.5rem);
-      font-weight: 300;
-      letter-spacing: 0;
-      line-height: 1.05;
-    }
-    .hero h1 strong { font-weight: 800; }
-    .hero p {
-      max-width: 420px;
-      margin-bottom: 2.4rem;
-      color: var(--soft);
-      font-size: 1rem;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 44px;
-      padding: 0.8rem 1.4rem;
-      border: 1px solid var(--dim);
-      border-radius: 2px;
-      background: transparent;
-      color: var(--white);
-      font: inherit;
-      font-size: 0.7rem;
-      font-weight: 800;
-      letter-spacing: 0.16em;
-      text-decoration: none;
-      text-transform: uppercase;
-      transition: border-color 0.2s, color 0.2s, background 0.2s;
-    }
-    .btn:hover { border-color: var(--accent); color: var(--accent); }
-    .btn.accent { border-color: var(--accent); background: var(--accent); color: var(--black); }
-    .btn.accent:hover { background: var(--soft); color: var(--black); }
 
-    .section {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 7rem 3rem;
-      scroll-margin-top: 1rem;
-    }
-    .section + .section { border-top: 1px solid var(--dim); }
-    .section-label { margin-bottom: 0.9rem; }
-    .section h2 {
-      margin-bottom: 3rem;
-      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 2rem);
       font-weight: 300;
-      letter-spacing: 0;
-      line-height: 1.2;
+      letter-spacing: -0.01em;
+      margin-bottom: 2.5rem;
     }
-    .section h2 strong { font-weight: 800; }
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-    }
-    .product-card {
-      min-height: 310px;
-      display: flex;
-      flex-direction: column;
-      padding: 2rem;
-      background: #0c1235;
-      border: 1px solid var(--dim);
-      border-radius: 4px;
-      transition: border-color 0.25s, transform 0.25s;
-    }
-    .product-card:hover { border-color: var(--accent); transform: translateY(-4px); }
-    .product-card h3 { margin-bottom: 0.5rem; font-size: 1.15rem; }
-    .product-price { margin-bottom: 1.2rem; color: var(--accent); font-size: 1.7rem; font-weight: 800; }
-    .product-card p { margin-bottom: 2rem; color: var(--soft); font-size: 0.9rem; }
-    .product-card .btn { width: 100%; margin-top: auto; }
+    .section-title strong { font-weight: 700; }
 
     .steps {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 3rem;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2.5rem;
     }
-    .step-num { margin-bottom: 1rem; color: var(--accent); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; }
-    .step h3 { margin-bottom: 0.5rem; font-size: 1rem; }
-    .step p { color: var(--soft); font-size: 0.88rem; }
+    .step-num {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      opacity: 0.6;
+      margin-bottom: 0.7rem;
+    }
+    .step h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .step p { font-size: 0.82rem; color: var(--soft); line-height: 1.7; }
 
+    /* ── PRICING TABLE ── */
     .pricing-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1px;
       background: var(--dim);
       border: 1px solid var(--dim);
     }
-    .pricing-card { position: relative; padding: 2.5rem 2rem; background: var(--black); }
-    .pricing-card.featured { background: #0c1235; }
-    .pricing-card.featured::before {
-      content: 'STARTER';
-      position: absolute;
-      top: -1px;
-      left: 2rem;
-      padding: 0.2rem 0.6rem;
-      background: var(--accent);
-      color: var(--black);
-      font-size: 0.58rem;
+
+    .pricing-card {
+      background: var(--card-bg);
+      padding: 2rem 1.8rem;
+    }
+    .pricing-card.featured { background: #0c1540; }
+
+    .p-label {
+      font-size: 0.62rem;
       font-weight: 700;
       letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin-bottom: 1rem;
     }
-    .card-label { margin-bottom: 1.2rem; color: var(--soft); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
-    .price { margin-bottom: 0.3rem; color: var(--white); font-size: 2.8rem; font-weight: 700; line-height: 1; }
-    .price sup { margin-right: 0.1rem; font-size: 1.1rem; font-weight: 400; vertical-align: super; }
-    .price-note { min-height: 3.5rem; margin-bottom: 2rem; color: var(--mid); font-size: 0.78rem; line-height: 1.5; }
-    .perks { min-height: 8.5rem; display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 2rem; list-style: none; }
-    .perks li { display: flex; gap: 0.75rem; color: var(--soft); font-size: 0.85rem; }
-    .perks li::before { content: '–'; color: var(--accent); flex-shrink: 0; }
-    .pricing-card .btn { width: 100%; }
-    .pricing-note { margin-top: 1.5rem; color: var(--mid); font-size: 0.75rem; text-align: center; }
+    .p-price {
+      font-size: 2.4rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .p-price sup { font-size: 1rem; font-weight: 400; vertical-align: super; }
+    .p-note { font-size: 0.75rem; color: var(--mid); margin-bottom: 1.5rem; line-height: 1.5; }
+    .p-perks { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.8rem; }
+    .p-perks li { font-size: 0.82rem; color: var(--soft); display: flex; gap: 0.6rem; }
+    .p-perks li::before { content: '–'; color: var(--accent); opacity: 0.7; flex-shrink: 0; }
 
-    footer {
-      margin-left: 220px;
-      padding: 2.5rem 3rem;
-      border-top: 1px solid var(--dim);
-      color: var(--mid);
+    .pricing-note {
+      padding: 1rem 0 0;
       font-size: 0.72rem;
-      letter-spacing: 0.08em;
+      color: var(--mid);
       text-align: center;
     }
 
-    @media (max-width: 760px) {
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-top: 1px solid var(--dim);
+    }
+    footer span { font-size: 0.7rem; color: var(--mid); letter-spacing: 0.08em; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 700px) {
+      body { flex-direction: column; overflow: auto; }
       .sidebar {
-        inset: 0 0 auto 0;
-        width: auto;
-        height: 64px;
+        width: 100%;
+        height: auto;
+        position: relative;
         flex-direction: row;
         align-items: center;
-        padding: 0 1.25rem;
-        border-right: 0;
+        padding: 0;
+        border-right: none;
         border-bottom: 1px solid var(--dim);
       }
-      .logo { font-size: 0.78rem; }
-      .sidebar-nav { flex-direction: row; gap: 1rem; margin: 0 0 0 auto; }
-      .sidebar-nav a { font-size: 0.56rem; letter-spacing: 0.12em; }
-      .cart-link { margin: 0 0 0 1rem; padding: 0; border: 0; font-size: 0; }
-      .cart-link::before { content: '🛒'; font-size: 1rem; }
-      main, footer { margin-left: 0; }
-      .hero { min-height: 760px; padding-top: 7rem; }
-      .section { padding: 5rem 1.5rem; scroll-margin-top: 64px; }
-      .product-grid, .pricing-grid { grid-template-columns: 1fr; }
-      .steps { grid-template-columns: 1fr; gap: 2.2rem; }
-      .price-note, .perks { min-height: 0; }
-    }
-
-    @media (max-width: 480px) {
-      .sidebar { padding: 0 0.9rem; }
-      .sidebar-nav { gap: 0.65rem; }
-      .sidebar-nav a { font-size: 0.5rem; letter-spacing: 0.08em; }
-      .sidebar-nav a[href="/studio.html"] { display: none; }
-      .cart-link { margin-left: 0.7rem; }
-      #hero-canvas { width: 170px; height: 170px; }
+      .sidebar-logo { padding: 0.9rem 1.2rem; border-bottom: none; font-size: 0.85rem; }
+      .sidebar-nav { flex-direction: row; padding: 0; overflow-x: auto; flex: 1; }
+      .nav-section-label { display: none; }
+      .sidebar-nav a { padding: 0.9rem 0.8rem; border-left: none; border-bottom: 2px solid transparent; white-space: nowrap; }
+      .sidebar-nav a.active { border-bottom-color: var(--accent); border-left-color: transparent; }
+      .sidebar-divider { display: none; }
+      .sidebar-bottom { padding: 0.5rem 1rem; border-top: none; }
+      .main { height: auto; overflow: visible; }
+      .shop-header { padding: 1.5rem 1.5rem 1rem; }
+      .content-section { padding: 2.5rem 1.5rem; }
+      footer { padding: 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <aside class="sidebar">
-    <a class="logo" href="#top">Spinnlitz</a>
-    <nav class="sidebar-nav" aria-label="Store sections">
-      <a href="#shop">SHOP</a>
-      <a href="#how-it-works">HOW IT WORKS</a>
-      <a href="#pricing">PRICING</a>
-      <a href="/studio.html">STUDIO</a>
-    </nav>
-    <a class="cart-link" href="/cart.html">🛒 Cart</a>
-  </aside>
 
-  <main>
-    <section class="hero" id="top">
-      <canvas id="hero-canvas" width="200" height="200" aria-label="Animated spinning Spinnlitz disc"></canvas>
-      <div class="eyebrow">Spinning shoe charms</div>
-      <h1>Wear something <strong>that moves.</strong></h1>
-      <p>Custom spinning charms for your shoes. Pick your icon, choose your color, and make it yours.</p>
-      <a class="btn accent" href="/studio.html">Open Studio</a>
-    </section>
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <a class="sidebar-logo" href="#shop">Spinnlitz<span>.</span></a>
+  <nav class="sidebar-nav" id="sidebar-nav">
+    <div class="nav-section-label">Store</div>
+    <a href="#shop" class="active">Shop</a>
+    <div class="nav-section-label">Info</div>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#pricing">Pricing</a>
+    <div class="sidebar-divider"></div>
+    <a href="/studio.html" style="color:var(--accent);opacity:0.85">✦ Design Studio</a>
+  </nav>
+  <div class="sidebar-bottom">
+    <a href="/cart.html" class="cart-btn">
+      🛒 Cart <span class="cart-badge" id="cart-badge"></span>
+    </a>
+  </div>
+</aside>
 
-    <section class="section" id="shop">
-      <div class="section-label">Shop</div>
-      <h2>Choose your <strong>spin.</strong></h2>
-      <div class="product-grid">
-        <article class="product-card">
-          <h3>Custom Disc</h3>
-          <div class="product-price">$4.99</div>
-          <p>Your icon, your color. We print it.</p>
-          <a class="btn" href="/studio.html">Design Yours</a>
-        </article>
-        <article class="product-card">
-          <h3>Starter Pack</h3>
-          <div class="product-price">$9.99</div>
-          <p>2 bases + 2 discs. Everything to get rolling.</p>
-          <a class="btn accent" href="/studio.html">Get Started</a>
-        </article>
-        <article class="product-card">
-          <h3>Custom Gym / Team Order</h3>
-          <div class="product-price">Bulk</div>
-          <p>Logo + text on a 50mm disc. Batch pricing available.</p>
-          <a class="btn" href="mailto:spinnlitz@gmail.com">Get a Quote</a>
-        </article>
+<!-- ── MAIN ── -->
+<main class="main" id="main-scroll">
+
+  <!-- SHOP -->
+  <div id="shop">
+    <div class="shop-header">
+      <h1>Shop</h1>
+      <span class="item-count">3 products</span>
+    </div>
+
+    <div class="product-grid">
+
+      <!-- Card 1: Custom Disc -->
+      <div class="product-card">
+        <div class="product-visual">
+          <canvas id="disc-canvas" width="200" height="200"></canvas>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Custom Spinner Disc</div>
+          <div class="product-desc">Pick any icon from thousands of shapes. Choose your color. We 3D print it and ship it to you.</div>
+          <div class="product-footer">
+            <div class="product-price"><sup>$</sup>4.99 <span class="per">each</span></div>
+            <a href="/studio.html" class="btn-shop primary">Design Yours</a>
+          </div>
+        </div>
       </div>
-    </section>
 
-    <section class="section" id="how-it-works">
-      <div class="section-label">How it works</div>
-      <h2>Three steps. <strong>That's it.</strong></h2>
-      <div class="steps">
-        <article class="step">
-          <div class="step-num">01</div>
-          <h3>Design</h3>
-          <p>Open the studio. Pick your shape from thousands of icons or request something custom. Choose your color.</p>
-        </article>
-        <article class="step">
-          <div class="step-num">02</div>
-          <h3>Print</h3>
-          <p>We 3D print your disc to order. No mass production. Each one made for you.</p>
-        </article>
-        <article class="step">
-          <div class="step-num">03</div>
-          <h3>Ship</h3>
-          <p>Your Spinnlitz ships to your door, ready to press into any standard shoe hole and spin.</p>
-        </article>
+      <!-- Card 2: Starter Pack -->
+      <div class="product-card">
+        <div class="product-visual">
+          <div class="badge">Best Value</div>
+          <canvas id="pack-canvas" width="200" height="200"></canvas>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Starter Pack</div>
+          <div class="product-desc">2 housing bases + 2 custom discs. Everything you need to get spinning. Mix colors and shapes.</div>
+          <div class="product-footer">
+            <div class="product-price"><sup>$</sup>9.99 <span class="per">pack</span></div>
+            <a href="/studio.html" class="btn-shop primary">Get Started</a>
+          </div>
+        </div>
       </div>
-    </section>
 
-    <section class="section" id="pricing">
-      <div class="section-label">Pricing</div>
-      <h2>Simple. <strong>No surprises.</strong></h2>
-      <div class="pricing-grid">
-        <article class="pricing-card featured">
-          <div class="card-label">Starter Pack</div>
-          <div class="price"><sup>$</sup>9.99</div>
-          <div class="price-note">2 bases + 2 spinner discs<br />Everything you need to start.</div>
-          <ul class="perks">
-            <li>2 housing bases</li>
-            <li>2 custom spinner discs</li>
-            <li>Design each disc yourself</li>
-            <li>Mix colors and shapes</li>
-          </ul>
-          <a class="btn accent" href="/studio.html">Get Started</a>
-        </article>
-        <article class="pricing-card">
-          <div class="card-label">Bases</div>
-          <div class="price"><sup>$</sup>3.99</div>
-          <div class="price-note">per base<br />Add more shoes to the rotation.</div>
-          <ul class="perks">
-            <li>Housing base only</li>
-            <li>Fits any standard shoe hole</li>
-            <li>Pair with any disc</li>
-          </ul>
-          <a class="btn" href="/studio.html">Add a Base</a>
-        </article>
-        <article class="pricing-card">
-          <div class="card-label">Spinner Discs</div>
-          <div class="price"><sup>$</sup>1.99</div>
-          <div class="price-note">each &nbsp;·&nbsp; or 5 for $9.99<br />Swap your look anytime.</div>
-          <ul class="perks">
-            <li>One custom disc</li>
-            <li>Your shape, your color</li>
-            <li>Snaps onto any base</li>
-            <li>5-pack saves 40%</li>
-          </ul>
-          <a class="btn" href="/studio.html">Design a Disc</a>
-        </article>
+      <!-- Card 3: Custom Gym Order -->
+      <div class="product-card">
+        <div class="product-visual">
+          <canvas id="gym-canvas" width="200" height="200"></canvas>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Custom Gym / Team Order</div>
+          <div class="product-desc">Your logo + team name on a 50mm disc. Custom arc text, any color. Great for gyms, teams, and events. Batch pricing available.</div>
+          <div class="product-footer">
+            <div class="product-price" style="font-size:1rem;font-weight:600;letter-spacing:0.04em">Get a Quote</div>
+            <a href="mailto:nick@spinnlitz.com" class="btn-shop">Contact Us</a>
+          </div>
+        </div>
       </div>
-      <div class="pricing-note">+ shipping on all orders &nbsp;·&nbsp; Free over $25</div>
-    </section>
-  </main>
 
-  <footer>Spinnlitz · LFH Productions</footer>
+    </div>
+  </div>
 
-  <script>
-    const canvas = document.getElementById('hero-canvas');
+  <!-- HOW IT WORKS -->
+  <div id="how-it-works" class="content-section">
+    <div class="section-eyebrow">How it works</div>
+    <h2 class="section-title">Three steps.<br><strong>That's it.</strong></h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Design</h3>
+        <p>Open the studio. Pick your shape from thousands of icons or request something custom. Choose your color.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>We Print It</h3>
+        <p>Every piece is 3D printed to order. No mass production. Each one made for you.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Press It In</h3>
+        <p>Drop it into any standard Croc hole. Snaps in, spins freely, stays put. Swap anytime.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div id="pricing" class="content-section">
+    <div class="section-eyebrow">Pricing</div>
+    <h2 class="section-title">Simple.<br><strong>No surprises.</strong></h2>
+
+    <div class="pricing-grid">
+      <div class="pricing-card featured">
+        <div class="p-label">Starter Pack</div>
+        <div class="p-price"><sup>$</sup>9.99</div>
+        <div class="p-note">2 bases + 2 discs<br>Best way to start.</div>
+        <ul class="p-perks">
+          <li>2 housing bases</li>
+          <li>2 custom spinner discs</li>
+          <li>Design each disc yourself</li>
+          <li>Mix colors and shapes</li>
+        </ul>
+        <a class="btn-shop primary" href="/studio.html">Get Started</a>
+      </div>
+      <div class="pricing-card">
+        <div class="p-label">Custom Disc</div>
+        <div class="p-price"><sup>$</sup>4.99</div>
+        <div class="p-note">each &nbsp;·&nbsp; or 3 for $9.99<br>Swap your look anytime.</div>
+        <ul class="p-perks">
+          <li>One custom disc</li>
+          <li>Your shape, your color</li>
+          <li>Snaps onto any base</li>
+          <li>3-pack auto-bundles</li>
+        </ul>
+        <a class="btn-shop" href="/studio.html">Design a Disc</a>
+      </div>
+      <div class="pricing-card">
+        <div class="p-label">Housing Base</div>
+        <div class="p-price"><sup>$</sup>3.99</div>
+        <div class="p-note">per base<br>Add more shoes to the rotation.</div>
+        <ul class="p-perks">
+          <li>Housing peg only</li>
+          <li>Fits any standard Croc hole</li>
+          <li>Works with any disc</li>
+        </ul>
+        <a class="btn-shop" href="/studio.html">Add a Base</a>
+      </div>
+    </div>
+    <div class="pricing-note">+ shipping on all orders &nbsp;·&nbsp; Free over $25</div>
+  </div>
+
+  <footer>
+    <span>Spinnlitz</span>
+    <span>LFH Productions © 2025</span>
+  </footer>
+
+</main>
+
+<script>
+  // ── CART BADGE ──────────────────────────────────────────────────
+  function getCart() { return JSON.parse(localStorage.getItem('spinnlitz-cart') || '[]'); }
+  function updateBadge() {
+    const n = getCart().length;
+    const badge = document.getElementById('cart-badge');
+    badge.textContent = n;
+    badge.classList.toggle('has-items', n > 0);
+  }
+  updateBadge();
+
+  // ── ACTIVE NAV (IntersectionObserver) ───────────────────────────
+  const sections = ['shop','how-it-works','pricing'];
+  const navLinks = document.querySelectorAll('#sidebar-nav a[href^="#"]');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`#sidebar-nav a[href="#${e.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { root: document.getElementById('main-scroll'), threshold: 0.3 });
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) obs.observe(el);
+  });
+
+  // ── SPINNER CANVASES ─────────────────────────────────────────────
+  function makeSpinner(canvasId, spokes, colorA, colorB, speed, startAngle) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const W = 200, H = 200, CX = 100, CY = 100, R = 72;
-    let angle = 0;
+    const W = canvas.width, H = canvas.height;
+    const CX = W/2, CY = H/2, R = W * 0.42;
+    let angle = startAngle || 0;
 
-    function drawDisc(a) {
+    function draw() {
       ctx.clearRect(0, 0, W, H);
       ctx.save();
       ctx.translate(CX, CY);
-      ctx.rotate(a);
+      ctx.rotate(angle);
 
-      const spokes = 8;
+      // Disc
+      ctx.beginPath();
+      ctx.arc(0, 0, R, 0, Math.PI * 2);
+      ctx.fillStyle = '#0d1540';
+      ctx.fill();
+
+      // Spokes
       for (let i = 0; i < spokes; i++) {
         ctx.save();
         ctx.rotate((Math.PI * 2 / spokes) * i);
         ctx.beginPath();
-        ctx.moveTo(0, -8);
-        ctx.quadraticCurveTo(R * 0.55, -R * 0.45, R * 0.62, -R * 0.78);
-        ctx.lineWidth = 5;
+        ctx.moveTo(0, -7);
+        ctx.quadraticCurveTo(R * 0.52, -R * 0.42, R * 0.6, -R * 0.76);
+        ctx.lineWidth = 4.5;
         ctx.lineCap = 'round';
-        const grad = ctx.createLinearGradient(0, -8, R * 0.62, -R * 0.78);
-        grad.addColorStop(0, 'rgba(255,110,180,0.9)');
-        grad.addColorStop(1, 'rgba(255,140,80,0.15)');
+        const grad = ctx.createLinearGradient(0, -7, R * 0.6, -R * 0.76);
+        grad.addColorStop(0, colorA);
+        grad.addColorStop(1, colorB);
         ctx.strokeStyle = grad;
         ctx.stroke();
         ctx.restore();
       }
 
+      // Outer rim
       ctx.beginPath();
       ctx.arc(0, 0, R, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255,110,180,0.15)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(255,110,180,0.18)';
+      ctx.lineWidth = 1.5;
       ctx.stroke();
 
+      // Center hub
       ctx.beginPath();
-      ctx.arc(0, 0, 6, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255,110,180,0.4)';
+      ctx.arc(0, 0, 5, 0, Math.PI * 2);
+      ctx.fillStyle = colorA;
+      ctx.globalAlpha = 0.5;
       ctx.fill();
+      ctx.globalAlpha = 1;
+
       ctx.restore();
+      angle += speed;
+      requestAnimationFrame(draw);
     }
+    draw();
+  }
 
-    let lastTs = 0;
-    function loop(ts) {
-      const dt = ts - lastTs;
-      lastTs = ts;
-      angle += (Math.PI * 2 / 12000) * dt;
-      drawDisc(angle);
-      requestAnimationFrame(loop);
-    }
-    requestAnimationFrame(loop);
+  // disc card — pink spokes, slow
+  makeSpinner('disc-canvas', 8, 'rgba(255,110,180,0.9)', 'rgba(255,110,180,0.05)', 0.012, 0);
+  // pack card — blue/teal spokes, medium
+  makeSpinner('pack-canvas', 6, 'rgba(122,179,212,0.9)', 'rgba(122,179,212,0.05)', 0.018, 1.2);
+  // gym card — gold/orange spokes, slightly faster
+  makeSpinner('gym-canvas', 10, 'rgba(255,200,80,0.9)', 'rgba(255,140,40,0.05)', 0.022, 2.4);
+</script>
 
-    const sectionLinks = [...document.querySelectorAll('.sidebar-nav a[href^="#"]')];
-    const sections = sectionLinks.map(link => document.querySelector(link.getAttribute('href')));
-    const observer = new IntersectionObserver(entries => {
-      const visible = entries
-        .filter(entry => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!visible) return;
-      sectionLinks.forEach(link => {
-        link.classList.toggle('active', link.getAttribute('href') === `#${visible.target.id}`);
-      });
-    }, { rootMargin: '-20% 0px -55% 0px', threshold: [0, 0.25, 0.5] });
-    sections.forEach(section => observer.observe(section));
-  </script>
 </body>
 </html>
