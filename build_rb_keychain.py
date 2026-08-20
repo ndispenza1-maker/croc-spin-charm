@@ -1,194 +1,181 @@
 """
 Righteous Brothers BJJ — Shaka Keychain Pendant
-50mm tip-to-tip (pinky to thumb)
-~4mm thick
-Small half-ring loop at top for keychain attachment
-Standalone piece — not a spinner disc
+50mm tip-to-tip (pinky to thumb), 4mm thick, one solid piece
+Shaka drawn from geometric primitives — guaranteed single connected body
+Keychain loop attached at top of curled fingers
 """
 
-import subprocess, pathlib, re, math
+import pathlib, math
 import numpy as np
-from PIL import Image
 import trimesh
-from trimesh import creation
-from shapely.geometry import Polygon, MultiPolygon
+from shapely.geometry import Polygon, Point
 from shapely.ops import unary_union
 from shapely.affinity import translate as sh_translate, scale as sh_scale, rotate as sh_rotate
-from svg.path import parse_path
-from svg.path.path import Line, CubicBezier, QuadraticBezier, Arc, Close
 
-# ── dimensions ───────────────────────────────────────────────────
-TARGET_SPAN_MM = 50.0   # tip of pinky to tip of thumb
-THICKNESS      = 4.0    # mm — solid, sturdy for keychain use
-LOOP_OD        = 7.0    # outer diameter of keychain loop (mm)
-LOOP_ID        = 4.5    # inner diameter (hole for ring)
-LOOP_H         = 3.5    # how far the loop extends above the shaka
+TARGET_SPAN_MM = 50.0   # pinky tip to thumb tip, mm
+THICKNESS      = 4.0    # mm — solid
+LOOP_R_INNER   = 2.5    # keyring hole radius, mm
+LOOP_WALL      = 2.2    # ring wall thickness, mm
+LOOP_NECK_W    = 6.0    # neck width connecting loop to body, mm
 
-IMG_PATH = '/home/ubuntu/.openclaw/media/inbound/90b644b3-001a-4729-9841-aecd9bd943da.png'
-OUT_STL  = '/home/ubuntu/croc-spin-charm/custom-orders/rb_shaka_keychain.stl'
+OUT_STL = '/home/ubuntu/croc-spin-charm/custom-orders/rb_shaka_keychain.stl'
 
-# ── extract shaka silhouette ─────────────────────────────────────
-def extract_shaka_shape(target_span_mm):
-    img = Image.open(IMG_PATH).convert('L')
-    w, h = img.size
-    m = 0.22
-    box = (int(w*m), int(h*m), int(w*(1-m)), int(h*(1-m)))
-    cropped = img.crop(box)
-    big = cropped.resize((cropped.width*4, cropped.height*4), Image.LANCZOS)
-    arr = np.array(big)
-    binary = Image.fromarray(((arr < 140) * 255).astype(np.uint8))
+# ── geometry helpers ─────────────────────────────────────────────
+def circle(cx, cy, r, n=64):
+    return Polygon([(cx + r*math.cos(2*math.pi*i/n),
+                     cy + r*math.sin(2*math.pi*i/n)) for i in range(n)])
 
-    pbm = '/tmp/shaka_key.pbm'
-    svg_out = '/tmp/shaka_key.svg'
-    binary.save(pbm)
-    subprocess.run([
-        '/home/linuxbrew/.linuxbrew/bin/potrace',
-        '--svg', '--alphamax', '1.0', '--opttolerance', '0.3',
-        '-o', svg_out, pbm
-    ], capture_output=True)
+def rounded_rect(cx, cy, w, h, r, n=12):
+    pts = []
+    corners = [
+        ( w/2-r,  h/2-r, 0),
+        (-w/2+r,  h/2-r, math.pi/2),
+        (-w/2+r, -h/2+r, math.pi),
+        ( w/2-r, -h/2+r, 3*math.pi/2),
+    ]
+    for (ox, oy, start) in corners:
+        for i in range(n+1):
+            t = start + (math.pi/2)*i/n
+            pts.append((cx + ox + r*math.cos(t), cy + oy + r*math.sin(t)))
+    return Polygon(pts)
 
-    content = pathlib.Path(svg_out).read_text()
-    vb_vals = [float(x) for x in re.search(r'viewBox="([^"]+)"', content).group(1).split()]
-    vb_w, vb_h = vb_vals[2], vb_vals[3]
-    tx, ty, sx, sy = 0.0, vb_h, 0.1, -0.1
+# ── build shaka from geometric primitives ────────────────────────
+def build_shaka():
+    """
+    Hang-loose shaka: thumb extended upper-right, pinky extended lower-left,
+    middle three fingers curled into palm. All parts overlapping = one solid piece.
+    """
+    parts = []
 
-    def tp(x, y): return tx + sx*x, ty + sy*y
+    # Palm — fat rounded rectangle, center of the hand
+    palm = rounded_rect(0, 0, 18, 22, 4)
+    parts.append(palm)
 
-    def d_to_poly(d, n=64):
-        pts = []
-        for seg in parse_path(d):
-            if isinstance(seg, (Line, Close)):
-                pts.append(tp(seg.end.real, seg.end.imag))
-            elif isinstance(seg, (CubicBezier, QuadraticBezier, Arc)):
-                for i in range(1, n+1):
-                    t = i/n; p = seg.point(t)
-                    pts.append(tp(p.real, p.imag))
-        if len(pts) < 3: return None
-        try:
-            p = Polygon(pts)
-            if not p.is_valid: p = p.buffer(0)
-            return p if not p.is_empty else None
-        except: return None
+    # Thumb — capsule angled upper-right, rooted at right side of palm
+    thumb_angle = math.radians(35)
+    thumb_len, thumb_w = 20, 7
+    # place center of thumb capsule along the angle from palm root
+    tx = 9 + thumb_len/2 * math.cos(thumb_angle)
+    ty = 8 + thumb_len/2 * math.sin(thumb_angle)
+    thumb = rounded_rect(tx, ty, thumb_len, thumb_w, thumb_w/2 - 0.5)
+    thumb = sh_rotate(thumb, math.degrees(thumb_angle), origin=(9, 8))
+    parts.append(thumb)
 
-    raw = [p for d in re.findall(r'd="([^"]+)"', content)
-           if (p := d_to_poly(d)) is not None]
-    raw.sort(key=lambda p: p.area, reverse=True)
+    # Pinky — capsule angled lower-left, rooted at left side of palm
+    pinky_angle = math.radians(200)
+    pinky_len, pinky_w = 18, 6
+    px = -9 + pinky_len/2 * math.cos(pinky_angle)
+    py = -8 + pinky_len/2 * math.sin(pinky_angle)
+    pinky = rounded_rect(px, py, pinky_len, pinky_w, pinky_w/2 - 0.5)
+    pinky = sh_rotate(pinky, math.degrees(pinky_angle), origin=(-9, -8))
+    parts.append(pinky)
 
-    # pick the hand polygons (central, not border noise)
-    hand = [p for p in raw
-            if (p.bounds[2]-p.bounds[0]) < vb_w*0.85
-            and p.area >= 200
-            and vb_w*0.15 < p.centroid.x < vb_w*0.85
-            and vb_h*0.15 < p.centroid.y < vb_h*0.85]
+    # Curled fingers — three rounded bumps along the top of the palm,
+    # overlapping into the palm so they merge into one piece
+    for (fx, fy, fw, fh) in [
+        (-5,  10, 5.5, 10),   # index
+        ( 0,  11, 5.0,  9),   # middle
+        ( 5,  10, 5.0,  9),   # ring
+    ]:
+        parts.append(rounded_rect(fx, fy, fw, fh, 2.2))
 
-    if not hand:
-        raise RuntimeError("No hand polygons found")
-
-    shape = unary_union(hand)
-
-    # center on bounding box midpoint
-    bnd = shape.bounds
-    mid_x = (bnd[0]+bnd[2])/2
-    mid_y = (bnd[1]+bnd[3])/2
-    shape = sh_translate(shape, -mid_x, -mid_y)
-
-    # scale so horizontal span = target_span_mm
-    bnd = shape.bounds
-    current_span = bnd[2] - bnd[0]   # x-span = pinky tip to thumb tip
-    sf = target_span_mm / current_span
-    shape = sh_scale(shape, sf, sf, origin=(0, 0))
-
-    print(f"  Shaka bounds after scale: {[f'{x:.1f}' for x in shape.bounds]}")
+    shape = unary_union(parts)
+    if shape.geom_type != 'Polygon':
+        # buffer merge any tiny gaps
+        shape = shape.buffer(0.3).buffer(-0.2)
     return shape
 
-# ── extrude 2D polygon to 3D mesh ────────────────────────────────
-def extrude_shape(shape, height):
-    """Extrude a shapely polygon to a trimesh solid."""
-    if isinstance(shape, MultiPolygon):
-        parts = list(shape.geoms)
-    else:
-        parts = [shape]
+# ── scale and center ─────────────────────────────────────────────
+print("Building shaka geometry...")
+shaka = build_shaka()
+print(f"  Shaka type: {shaka.geom_type}")
 
-    meshes = []
-    for poly in parts:
-        if poly.is_empty or poly.area < 0.01:
-            continue
-        try:
-            m = trimesh.creation.extrude_polygon(poly, height)
-            if m.is_volume:
-                meshes.append(m)
-        except Exception as e:
-            print(f"  Warning: extrude failed for polygon: {e}")
+bnd = shaka.bounds
+sf = TARGET_SPAN_MM / (bnd[2] - bnd[0])
+shaka = sh_scale(shaka, sf, sf, origin=(0, 0))
+bnd = shaka.bounds
+shaka = sh_translate(shaka, -(bnd[0]+bnd[2])/2, -(bnd[1]+bnd[3])/2)
+bnd = shaka.bounds
+print(f"  Span: {bnd[2]-bnd[0]:.1f}mm x {bnd[3]-bnd[1]:.1f}mm")
 
-    if not meshes:
-        raise RuntimeError("No valid meshes extruded")
-    return trimesh.boolean.union(meshes) if len(meshes) > 1 else meshes[0]
+# ── find loop attachment point ───────────────────────────────────
+# Attach at the topmost solid point near the centroid X
+# (the curled fingers — the natural top of the hanging pendant)
+print("Finding loop attachment point...")
+cx_shaka = shaka.centroid.x
+attach_x = cx_shaka
+attach_y = bnd[1]  # fallback
 
-# ── build keychain loop ───────────────────────────────────────────
-def make_loop(attach_y, attach_z_mid):
-    """
-    A half-ring (D-ring) that sits above the shaka.
-    Modeled as a torus section — outer tube that forms a loop.
-    attach_y: y position of top of shaka silhouette
-    """
-    # Ring center sits above the shaka top
-    ring_r  = (LOOP_OD - (LOOP_OD - LOOP_ID)) / 2  # mid-radius of the ring
-    tube_r  = (LOOP_OD - LOOP_ID) / 4               # tube cross-section radius
+for y in np.arange(bnd[3], bnd[1], -0.2):
+    if shaka.contains(Point(attach_x, y)):
+        attach_y = y
+        break
 
-    ring_center_y = attach_y + ring_r + 1.0  # 1mm gap above shaka
+# if nothing at centroid x, scan nearby
+if attach_y == bnd[1]:
+    for dx in np.arange(0, 10, 0.5):
+        for sx in [1, -1]:
+            xtest = cx_shaka + sx*dx
+            for y in np.arange(bnd[3], bnd[1], -0.2):
+                if shaka.contains(Point(xtest, y)):
+                    attach_x = xtest
+                    attach_y = y
+                    break
+            if attach_y != bnd[1]:
+                break
+        if attach_y != bnd[1]:
+            break
 
-    # Build a full torus, then clip to top half only
-    torus = creation.torus(ring_r, tube_r, 64, 16)
+print(f"  Attachment point: x={attach_x:.1f}, y={attach_y:.1f}")
 
-    # Rotate so the ring is upright (in XY plane by default — we want it in XZ... 
-    # actually we want the ring in the YZ plane so it sticks up above the shaka in Y)
-    # torus is built in XY plane — rotate 90° around X so it stands up in Y
-    rot = trimesh.transformations.rotation_matrix(math.pi/2, [1, 0, 0])
-    torus.apply_transform(rot)
-
-    # Translate to sit above shaka
-    torus.apply_translation([0, ring_center_y, attach_z_mid])
-
-    # Clip to upper half only (keep y > attach_y)
-    # Use a box to boolean-intersect
-    box_h = (LOOP_OD + 4) * 2
-    clip_box = creation.box([LOOP_OD + 2, box_h, THICKNESS + 4])
-    clip_box.apply_translation([0, attach_y + box_h/2, attach_z_mid])
-
-    loop = trimesh.boolean.intersection([torus, clip_box])
-    return loop
-
-# ── MAIN ─────────────────────────────────────────────────────────
-print("Extracting shaka silhouette...")
-shaka_2d = extract_shaka_shape(TARGET_SPAN_MM)
-
-print("Extruding shaka body...")
-shaka_mesh = extrude_shape(shaka_2d, THICKNESS)
-
-# Position: center XY, base at Z=0
-shaka_mesh.apply_translation([0, 0, 0])
-
+# ── build loop and neck ──────────────────────────────────────────
 print("Building keychain loop...")
-bnd = shaka_2d.bounds
-top_y      = bnd[3]           # top of shaka silhouette
-mid_z      = THICKNESS / 2    # mid-height for loop attachment
+loop_r_outer = LOOP_R_INNER + LOOP_WALL
+loop_cy = attach_y + loop_r_outer + 1.0  # loop center sits above attachment
 
-loop_mesh = make_loop(top_y, mid_z)
+outer_ring = circle(attach_x, loop_cy, loop_r_outer)
+inner_hole = circle(attach_x, loop_cy, LOOP_R_INNER)
+ring = outer_ring.difference(inner_hole)
 
-print("Combining...")
-combined = trimesh.boolean.union([shaka_mesh, loop_mesh])
+# Neck: solid rectangle overlapping 5mm into the shaka body
+neck = Polygon([
+    (attach_x - LOOP_NECK_W/2, attach_y - 5.0),
+    (attach_x + LOOP_NECK_W/2, attach_y - 5.0),
+    (attach_x + LOOP_NECK_W/2, loop_cy + loop_r_outer),
+    (attach_x - LOOP_NECK_W/2, loop_cy + loop_r_outer),
+])
 
-if not combined.is_watertight:
-    combined.fill_holes()
-    trimesh.repair.fix_normals(combined)
+loop_shape = ring.union(neck)
 
-# export
+# ── merge shaka + loop into one 2D shape ────────────────────────
+print("Merging into one 2D shape...")
+full_2d = shaka.union(loop_shape)
+print(f"  Result type: {full_2d.geom_type}")
+
+if full_2d.geom_type != 'Polygon':
+    # Force merge with a slightly larger buffer
+    full_2d = full_2d.buffer(0.4).buffer(-0.3)
+    print(f"  After bridge: {full_2d.geom_type}")
+
+# ── extrude to 3D ────────────────────────────────────────────────
+print("Extruding to 3D...")
+if full_2d.geom_type == 'MultiPolygon':
+    # take the largest part — should include body+loop
+    parts_list = sorted(full_2d.geoms, key=lambda g: g.area, reverse=True)
+    full_2d = parts_list[0]
+    print(f"  Using largest part (area={full_2d.area:.0f})")
+
+mesh = trimesh.creation.extrude_polygon(full_2d, THICKNESS)
+
+if not mesh.is_watertight:
+    mesh.fill_holes()
+    trimesh.repair.fix_normals(mesh)
+
 pathlib.Path(OUT_STL).parent.mkdir(parents=True, exist_ok=True)
-combined.export(OUT_STL)
+mesh.export(OUT_STL)
 
-dims = combined.bounding_box.extents
+dims = mesh.bounding_box.extents
 print(f"\nDone: {OUT_STL}")
-print(f"  Watertight: {combined.is_watertight}")
-print(f"  Faces:      {len(combined.faces)}")
-print(f"  Dims:       {dims[0]:.1f} x {dims[1]:.1f} x {dims[2]:.1f} mm  (X x Y x Z)")
-print(f"  (X-span should be ~{TARGET_SPAN_MM}mm pinky-to-thumb)")
+print(f"  Watertight: {mesh.is_watertight}")
+print(f"  Faces:      {len(mesh.faces)}")
+print(f"  Dims:       {dims[0]:.1f} x {dims[1]:.1f} x {dims[2]:.1f} mm")
