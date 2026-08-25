@@ -1,0 +1,12 @@
+[
+  {"id":"basic-sun","name":"Sunburst","group":"Basic","icon":"sun-fill","image":"/assets/spinner-placeholder.svg","description":"A bright radial spinner for everyday wear."},
+  {"id":"basic-star","name":"Star","group":"Basic","icon":"star-fill","image":"/assets/spinner-placeholder.svg","description":"A simple five-point shape with a clean silhouette."},
+  {"id":"basic-heart","name":"Heart","group":"Basic","icon":"heart-fill","image":"/assets/spinner-placeholder.svg","description":"A familiar shape made to keep moving."},
+  {"id":"basic-lightning","name":"Lightning","group":"Basic","icon":"lightning-fill","image":"/assets/spinner-placeholder.svg","description":"A sharp, energetic shape for a little extra edge."},
+  {"id":"basic-diamond","name":"Diamond","group":"Basic","icon":"diamond-fill","image":"/assets/spinner-placeholder.svg","description":"A balanced geometric spinner with a strong outline."},
+  {"id":"basic-moon","name":"Moon","group":"Basic","icon":"moon-fill","image":"/assets/spinner-placeholder.svg","description":"A curved crescent that catches the light as it turns."},
+  {"id":"seasonal-pumpkin","name":"Pumpkin","group":"Seasonal","icon":"emoji-dizzy-fill","image":"/assets/spinner-placeholder.svg","description":"Seasonal collection placeholder."},
+  {"id":"seasonal-snowflake","name":"Snowflake","group":"Seasonal","icon":"snow2","image":"/assets/spinner-placeholder.svg","description":"Seasonal collection placeholder."},
+  {"id":"seasonal-ghost","name":"Ghost","group":"Seasonal","icon":"emoji-surprise-fill","image":"/assets/spinner-placeholder.svg","description":"Seasonal collection placeholder."},
+  {"id":"seasonal-flower","name":"Flower","group":"Seasonal","icon":"flower1","image":"/assets/spinner-placeholder.svg","description":"Seasonal collection placeholder."}
+]
