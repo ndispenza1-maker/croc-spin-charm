@@ -119,7 +119,7 @@
 
   <div id="cart-content" style="display:none">
     <h1>Your Cart</h1>
-    <p class="sub">Spinner discs $0.99 each &nbsp;·&nbsp; Starter Pack $9.99 &nbsp;·&nbsp; Bases $2.99 each</p>
+    <p class="sub">Spinner discs $0.99 each &nbsp;·&nbsp; Spinnlitz Case $9.99 &nbsp;·&nbsp; Bases $2.99 each</p>
     <div id="groups"></div>
 
     <div class="summary">
@@ -145,7 +145,7 @@
 const SHIPPING = 4.99;
 const FREE_THRESHOLD = 25;
 const DISC_PRICE = 0.99;
-const STARTER_PACK_PRICE = 9.99;
+const CASE_PRICE = 9.99;
 const BASE_PRICE = 2.99;
 
 const COLOR_NAMES = {
@@ -173,27 +173,18 @@ function renderCart() {
 
   const discs = cart.filter(i => i.type === 'disc' || !i.type);
   const bases = cart.filter(i => i.type === 'base');
-  const packs = cart.filter(i => i.type === 'starter-pack');
+  const cases = cart.filter(i => i.type === 'case');
   const customs = cart.filter(i => i.type === 'custom');
 
   let subtotal = 0;
   const groupsEl = document.getElementById('groups');
   groupsEl.innerHTML = '';
 
-  packs.forEach(item => {
-    subtotal += STARTER_PACK_PRICE;
+  cases.forEach(item => {
+    subtotal += CASE_PRICE;
     const groupDiv = document.createElement('div');
     groupDiv.className = 'group';
-    groupDiv.innerHTML = `<div class="group-header bundle"><span>Starter Pack</span><span class="group-price">$${STARTER_PACK_PRICE.toFixed(2)} <button class="item-remove" data-id="${item.id}" title="Remove starter pack">×</button></span></div>`;
-    const itemsDiv = document.createElement('div');
-    itemsDiv.className = 'items';
-    (item.selections || []).forEach(selection => {
-      const row = document.createElement('div');
-      row.className = 'item';
-      row.innerHTML = `<img class="item-img" src="${selection.preview}" alt="${selection.shape} spinner placeholder" /><div class="item-info"><div class="item-name">${selection.shape}</div><div class="item-color">${selection.baseName} · ${selection.colorName}</div></div><span class="item-price">Included</span>`;
-      itemsDiv.appendChild(row);
-    });
-    groupDiv.appendChild(itemsDiv);
+    groupDiv.innerHTML = `<div class="group-header bundle"><span>Spinnlitz Case</span><span class="group-price">$${CASE_PRICE.toFixed(2)} <button class="item-remove" data-id="${item.id}" title="Remove case">×</button></span></div><div class="items"><div class="item"><img class="item-img" src="${item.preview}" alt="Spinnlitz case placeholder" /><div class="item-info"><div class="item-name">Spinnlitz Case</div><div class="item-color">Holds up to 10 spinner discs and 10 bases</div></div><span class="item-price">$${CASE_PRICE.toFixed(2)}</span></div></div>`;
     groupsEl.appendChild(groupDiv);
   });
 
