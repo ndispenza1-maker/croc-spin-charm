@@ -21,9 +21,7 @@ The storefront is frozen at the current design and structure. Do not redesign, r
 - `studio.html`: curated spinner collection and case add-to-cart flow
 - `cart.html`: case, spinner, and base cart pricing
 
-## Change-control rule
-
-Future work should be scoped to one of these unless Nick explicitly authorizes a storefront change:
+**Current authorized direction (2026-08-29):** Nick explicitly authorized the unified shop template and homepage routing update. The current storefront includes `shop.html` as the primary product-selection page, while `studio.html` remains available during transition. The shop uses in-page product detail popups, a data-driven catalog, progressive spinner disclosure, and the existing cart schema/pricing. The original baseline below remains the historical lock record; future changes still require Nick's explicit request.
 
 - Add or replace product assets and catalog entries
 - Correct a confirmed functional bug
