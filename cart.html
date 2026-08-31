@@ -119,7 +119,7 @@
 
   <div id="cart-content" style="display:none">
     <h1>Your Cart</h1>
-    <p class="sub">Spinner discs $0.99 each &nbsp;·&nbsp; Spinnlitz Case $9.99 &nbsp;·&nbsp; Bases $2.99 each</p>
+    <p class="sub">Spinner discs from $0.99 each &nbsp;·&nbsp; Spinnlitz Case $9.99 &nbsp;·&nbsp; Bases $2.99 each</p>
     <div id="groups"></div>
 
     <div class="summary">
@@ -192,8 +192,9 @@ function renderCart() {
   if (discs.length > 0) {
     for (let i = 0; i < discs.length; i += 1) {
       const chunk = discs.slice(i, i + 1);
-      const groupPrice = DISC_PRICE;
-      subtotal += groupPrice;
+      const itemPrice = Number(chunk[0].price) || DISC_PRICE;
+      const groupPrice = itemPrice;
+      subtotal += itemPrice;
 
       const groupDiv = document.createElement('div');
       groupDiv.className = 'group';
@@ -218,7 +219,7 @@ function renderCart() {
               ${COLOR_NAMES[item.color] || item.color}
             </div>
           </div>
-          <span class="item-price">$${DISC_PRICE.toFixed(2)}</span>
+          <span class="item-price">$${itemPrice.toFixed(2)}</span>
           <button class="item-remove" data-id="${item.id}" title="Remove">✕</button>`;
         itemsDiv.appendChild(row);
       });
